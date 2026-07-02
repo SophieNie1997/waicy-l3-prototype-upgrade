@@ -1,0 +1,3585 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第三节课作品观察 / Lesson 3 Prototype Comparison</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #171512;
+      --paper: #fffdf5;
+      --cream: #fff3d2;
+      --line: #211c16;
+      --muted: #746955;
+      --red: #ff6048;
+      --red-soft: #ffd8d0;
+      --yellow: #f7c948;
+      --teal: #16b8a7;
+      --green: #79ba4a;
+      --shadow: 8px 8px 0 #171512;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: clamp(17px, 1.08vw, 19px);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      color: var(--ink);
+      font-size: 1rem;
+      background:
+        linear-gradient(90deg, rgba(23, 21, 18, 0.06) 1px, transparent 1px),
+        linear-gradient(rgba(23, 21, 18, 0.06) 1px, transparent 1px),
+        linear-gradient(135deg, #fff7df 0%, #f0ce87 48%, #ff8068 100%);
+      background-size: 34px 34px, 34px 34px, 100% 100%;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1740px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 16px 0 26px;
+    }
+
+    .observe {
+      min-height: calc(100dvh - 32px);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .observe-head {
+      border: 4px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .en-line {
+      display: block;
+      margin-top: 0.24em;
+      color: #4f4538;
+      font-size: 0.8em;
+      font-weight: 830;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .analysis-hero .en-line,
+    .detail-top .en-line,
+    .code-hero .en-line {
+      color: #ffe7bd;
+    }
+
+    .observe-head .en-line {
+      color: #584d3f;
+    }
+
+    .observe-head h1 .en-line {
+      color: #c93224;
+    }
+
+    .btn .en-line,
+    .link-btn .en-line {
+      margin-top: 0.1em;
+      font-size: 0.72em;
+      line-height: 1.05;
+      color: inherit;
+      opacity: 0.82;
+    }
+
+    .take-head .en-line,
+    .frame-head .en-line {
+      font-size: 0.66em;
+      line-height: 1.05;
+    }
+
+    .take-body h3 .en-line {
+      font-size: 0.48em;
+      line-height: 1.16;
+      max-width: 22ch;
+    }
+
+    .take-body li .en-line {
+      font-size: 0.66em;
+      line-height: 1.18;
+      color: #514638;
+    }
+
+    .factor .en-line,
+    .action-card .en-line,
+    .record-cell .en-line {
+      font-size: 0.76em;
+      line-height: 1.15;
+    }
+
+    .mini-row .en-line,
+    .metric-card .en-line,
+    .direction-card .en-line,
+    .lesson-box .en-line,
+    .model-type-card .en-line,
+    .choice-step .en-line,
+    .site-card .en-line,
+    .case-card .en-line,
+    .prompt-card .en-line,
+    .code-lens .en-line,
+    .stat-card .en-line,
+    .code-takeaway .en-line {
+      font-size: 0.8em;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: clamp(1.7rem, 3.4vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .observe-head p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: clamp(0.96rem, 1.08vw, 1.12rem);
+      font-weight: 820;
+      line-height: 1.45;
+      max-width: 74ch;
+    }
+
+    .head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn,
+    .link-btn {
+      min-height: 48px;
+      display: inline-grid;
+      place-items: center;
+      border: 3px solid var(--line);
+      border-radius: 999px;
+      padding: 0 17px;
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 4px 4px 0 var(--line);
+      font-weight: 1000;
+      white-space: nowrap;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn.primary {
+      background: var(--red);
+      color: #fffdf5;
+    }
+
+    .btn:hover,
+    .link-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active,
+    .link-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0 var(--line);
+    }
+
+    .frames {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr);
+      gap: 12px;
+    }
+
+    .frame-card {
+      min-height: 0;
+      border: 4px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .frame-head {
+      min-height: 58px;
+      padding: 11px 15px;
+      border-bottom: 4px solid var(--line);
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 1000;
+    }
+
+    .frame-head small {
+      color: #594a27;
+      font-weight: 900;
+    }
+
+    .frame-card:nth-child(2) .frame-head {
+      background: #dbfff8;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 690px;
+      border: 0;
+      background: white;
+    }
+
+    .analysis {
+      display: none;
+      min-height: 100dvh;
+      padding: 14px 0 0;
+    }
+
+    .analysis.show {
+      display: block;
+    }
+
+    .code-compare {
+      display: none;
+      min-height: 100dvh;
+      padding: 24px 0 0;
+    }
+
+    .code-compare.show {
+      display: block;
+    }
+
+    .analysis-hero {
+      border: 4px solid var(--line);
+      border-radius: 20px;
+      background: var(--ink);
+      color: #fffdf5;
+      box-shadow: var(--shadow);
+      padding: clamp(10px, 1.45vw, 18px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .analysis-hero .en-line {
+      font-size: 0.58em;
+      line-height: 1.08;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn.code {
+      background: var(--yellow);
+      color: var(--ink);
+    }
+
+    .analysis-hero h2 {
+      font-size: clamp(1.7rem, 3.25vw, 3.85rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .analysis-hero p {
+      margin-top: 6px;
+      color: #f4dfbd;
+      font-size: clamp(0.95rem, 1.12vw, 1.12rem);
+      font-weight: 800;
+      line-height: 1.24;
+      max-width: 80ch;
+    }
+
+    .compare-text {
+      min-height: calc(100dvh - 196px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 30px;
+    }
+
+    .compare-text .take-head {
+      min-height: 58px;
+      padding: 11px 18px;
+    }
+
+    .compare-text .take-body {
+      padding: clamp(10px, 1.12vw, 18px);
+      gap: clamp(7px, 0.72vw, 10px);
+    }
+
+    .compare-text .take-body h3 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      gap: 14px;
+      align-items: start;
+      font-size: clamp(1.96rem, 2.78vw, 3.62rem);
+      max-width: none;
+    }
+
+    .compare-text .take-body h3 .en-line {
+      margin-top: 0;
+      font-size: 0.44em;
+      line-height: 1.12;
+      max-width: none;
+    }
+
+    .compare-text .take-body ul {
+      font-size: clamp(1.14rem, 1.38vw, 1.56rem);
+      gap: 0.24em;
+    }
+
+    .compare-text .take-body li {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .compare-text .take-body li .en-line {
+      margin-top: 0;
+      font-size: 0.86em;
+      line-height: 1.12;
+    }
+
+    .code-hero {
+      border: 4px solid var(--line);
+      border-radius: 20px;
+      background: var(--ink);
+      color: #fffdf5;
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 3vw, 34px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .code-hero h2 {
+      font-size: clamp(2.1rem, 5vw, 5.9rem);
+      line-height: 0.86;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .code-hero p {
+      margin-top: 14px;
+      color: #f4dfbd;
+      font-weight: 800;
+      line-height: 1.55;
+      max-width: 78ch;
+    }
+
+    .code-hero-copy {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-lead-copy {
+      display: grid;
+      gap: 8px;
+    }
+
+    .code-hero-copy .en-line,
+    .detail-lead-copy .en-line {
+      margin-top: 0;
+    }
+
+    .detail-title-copy {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.12em;
+      align-items: baseline;
+    }
+
+    .detail-title-copy .en-line {
+      flex-basis: 100%;
+      margin-top: 0.08em;
+    }
+
+    .detail-title-copy .detail-title-term {
+      display: inline-flex;
+      align-items: center;
+      border: 0.035em solid #fffdf5;
+      border-radius: 0.12em;
+      padding: 0 0.16em 0.06em;
+      background: #ffe66d;
+      color: var(--ink);
+      box-shadow: 0.06em 0.06em 0 rgba(255, 253, 245, 0.86);
+      line-height: 1;
+      white-space: nowrap;
+      overflow: visible;
+      transform: rotate(-1deg);
+    }
+
+    .detail-title-copy .detail-title-term::before {
+      display: none;
+    }
+
+    .code-term-row,
+    .detail-term-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .code-term-row .marker-word,
+    .detail-term-row .marker-word {
+      border: 2px solid #fffdf5;
+      border-radius: 999px;
+      padding: 0.04em 0.42em 0.08em;
+      background: #fff1b8;
+      color: var(--ink);
+      box-shadow: 3px 3px 0 rgba(255, 253, 245, 0.86);
+      line-height: 1.05;
+      white-space: nowrap;
+    }
+
+    .code-term-row .marker-word::before,
+    .detail-term-row .marker-word::before {
+      left: 0.2em;
+      right: 0.2em;
+      bottom: 0.08em;
+      height: 0.38em;
+      background: #ffe66d;
+      box-shadow: none;
+    }
+
+    .detail-term-row {
+      color: #f4dfbd;
+      font-weight: 900;
+    }
+
+    .code-map,
+    .code-case {
+      border: 4px solid var(--line);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .code-map h3,
+    .code-case h3 {
+      margin: 0 0 14px;
+      font-size: clamp(1.45rem, 2.4vw, 2.5rem);
+      line-height: 1;
+    }
+
+    .code-lenses,
+    .code-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .code-lens,
+    .stat-card {
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      padding: 14px;
+    }
+
+    .code-lens b,
+    .stat-card b {
+      display: block;
+      margin-bottom: 8px;
+      color: #c93224;
+      font-size: 1.18rem;
+    }
+
+    .code-lens p,
+    .stat-card p {
+      margin: 0;
+      color: #40372b;
+      font-size: 1.02rem;
+      font-weight: 820;
+      line-height: 1.5;
+    }
+
+    .stat-number {
+      display: block;
+      margin: 4px 0 8px;
+      color: var(--ink);
+      font: 1000 3rem/0.9 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .code-compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .code-column {
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      overflow: hidden;
+    }
+
+    .code-column h4 {
+      margin: 0;
+      padding: 10px 12px;
+      border-bottom: 3px solid var(--line);
+      background: var(--yellow);
+      color: var(--ink);
+      font-size: 1.1rem;
+    }
+
+    .code-column.teacher h4 {
+      background: #dbfff8;
+    }
+
+    .code-column pre {
+      margin: 0;
+      padding: 12px;
+      max-height: 330px;
+      overflow: auto;
+      background: #171512;
+      color: #fffdf5;
+      font: 760 0.9rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .code-takeaway {
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #dbfff8;
+      padding: 14px;
+      color: #30291f;
+      font-size: 1.04rem;
+      font-weight: 850;
+      line-height: 1.55;
+    }
+
+    .take-card,
+    .factor-board,
+    .question-board {
+      border: 4px solid var(--line);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .take-card {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100%;
+    }
+
+    .take-head {
+      min-height: 64px;
+      border-bottom: 4px solid var(--line);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--yellow);
+      font-weight: 1000;
+    }
+
+    .take-head strong {
+      font-size: clamp(1.18rem, 1.5vw, 1.7rem);
+    }
+
+    .take-head span {
+      font-size: clamp(1rem, 1.2vw, 1.34rem);
+    }
+
+    .take-card.teacher .take-head {
+      background: var(--red);
+      color: #fffdf5;
+    }
+
+    .take-body {
+      padding: clamp(22px, 2.4vw, 36px);
+      display: grid;
+      gap: clamp(18px, 1.8vw, 26px);
+      align-content: center;
+    }
+
+    .take-body h3 {
+      font-size: clamp(2.2rem, 3.25vw, 4.5rem);
+      line-height: 0.96;
+      max-width: 15ch;
+      text-wrap: balance;
+    }
+
+    .take-body ul {
+      margin: 0;
+      padding-left: 1.35rem;
+      color: #40372b;
+      font-weight: 850;
+      line-height: 1.45;
+      font-size: clamp(1.34rem, 1.55vw, 1.82rem);
+      display: grid;
+      gap: 0.5em;
+    }
+
+    .take-body li::marker {
+      color: var(--red);
+    }
+
+    .factor-board {
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .factor-board h3,
+    .question-board h3 {
+      font-size: clamp(1.5rem, 2.4vw, 2.6rem);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .factor-hint {
+      margin: -5px 0 14px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.45;
+    }
+
+    .factors {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .factor {
+      min-height: 118px;
+      border: 3px solid var(--line);
+      border-radius: 15px;
+      padding: 12px;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      text-align: left;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      width: 100%;
+      color: inherit;
+    }
+
+    .factor b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--red-deep, #c93224);
+      font-size: 1.1rem;
+    }
+
+    .factor span {
+      color: #4c4132;
+      font-weight: 780;
+      line-height: 1.42;
+      font-size: 1rem;
+    }
+
+    .factor:hover,
+    .factor.active {
+      transform: translateY(-2px);
+      background: #fff0b8;
+      box-shadow: 6px 6px 0 var(--line);
+    }
+
+    .factor:focus-visible,
+    .btn:focus-visible,
+    .link-btn:focus-visible {
+      outline: 4px solid var(--teal);
+      outline-offset: 3px;
+    }
+
+    .detail-stage {
+      display: none;
+      margin: 14px 0;
+    }
+
+    .detail-stage.show {
+      display: block;
+    }
+
+    .detail-page {
+      display: none;
+      border: 4px solid var(--line);
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .detail-page.active {
+      display: block;
+      animation: pageIn 220ms ease both;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-top {
+      min-height: 132px;
+      padding: clamp(18px, 3vw, 34px);
+      background: var(--ink);
+      color: #fffdf5;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 4px solid var(--line);
+    }
+
+    .detail-top h3 {
+      margin: 0;
+      font-size: clamp(2.15rem, 5vw, 5.6rem);
+      line-height: 0.88;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .detail-top p {
+      margin-top: 12px;
+      color: #f4dfbd;
+      font-weight: 800;
+      line-height: 1.55;
+      max-width: 76ch;
+    }
+
+    .hero-inline-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.18em;
+      margin: 0 0.08em;
+      border: 3px solid #fffdf5;
+      border-radius: 999px;
+      padding: 0.02em 0.58em 0.08em;
+      background: var(--yellow);
+      color: var(--ink);
+      box-shadow: 4px 4px 0 #fffdf5;
+      font-weight: 1000;
+      line-height: 1.08;
+      text-decoration: none;
+      transform: rotate(-1deg);
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .hero-inline-link::after {
+      content: "↗";
+      font-size: 0.68em;
+      line-height: 1;
+    }
+
+    .hero-inline-link:hover {
+      background: #dbfff8;
+      transform: translateY(-1px) rotate(0deg);
+      box-shadow: 5px 5px 0 #fffdf5;
+    }
+
+    .hero-inline-link:active {
+      transform: translate(2px, 2px) rotate(0deg);
+      box-shadow: 1px 1px 0 #fffdf5;
+    }
+
+    .detail-body {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .detail-grid.two {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .detail-grid.four {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .lesson-box,
+    .model-card,
+    .case-card,
+    .timeline-card,
+    .site-card,
+    .prompt-card {
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      padding: 14px;
+    }
+
+    .lesson-box h4,
+    .model-card h4,
+    .case-card h4,
+    .timeline-card h4,
+    .site-card h4,
+    .prompt-card h4 {
+      margin: 0 0 10px;
+      font-size: 1.28rem;
+      line-height: 1.15;
+      color: #c93224;
+    }
+
+    .lesson-box p,
+    .model-card p,
+    .case-card p,
+    .timeline-card p,
+    .site-card p,
+    .prompt-card p {
+      margin: 0;
+      color: #40372b;
+      line-height: 1.56;
+      font-weight: 780;
+      font-size: 1.02rem;
+    }
+
+    .model-card b {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 1.05rem;
+    }
+
+    .model-card .price,
+    .site-card a,
+    .case-card a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      margin-top: 10px;
+      border: 3px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 36px 7px 12px;
+      background: var(--yellow);
+      box-shadow: 3px 3px 0 rgba(23, 21, 18, 0.22);
+      font-weight: 950;
+      font-size: 0.88rem;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .site-card a::after,
+    .case-card a::after {
+      content: "↗";
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      background: #fffdf5;
+      display: grid;
+      place-items: center;
+      font-size: 0.76rem;
+      line-height: 1;
+      transform: translateY(-50%);
+    }
+
+    .site-card a:hover,
+    .case-card a:hover,
+    .source-links a:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 0 var(--line);
+      background: #dbfff8;
+    }
+
+    .site-card a:active,
+    .case-card a:active,
+    .source-links a:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--line);
+    }
+
+    .model-showcase {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1.58fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .model-principle {
+      border: 4px solid var(--line);
+      border-radius: 20px;
+      background: var(--yellow);
+      box-shadow: 6px 6px 0 var(--line);
+      padding: 18px;
+      display: grid;
+      align-content: center;
+      gap: 16px;
+      min-height: 320px;
+    }
+
+    .model-principle .model-icon {
+      width: 74px;
+      height: 74px;
+      font-size: 2.1rem;
+      background: var(--ink);
+      color: #fffdf5;
+    }
+
+    .model-principle h4 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 4.5rem);
+      line-height: 0.92;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+
+    .model-principle p {
+      margin: 0;
+      max-width: 32ch;
+      color: #3f331e;
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .model-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .model-legend span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 0 9px;
+      background: var(--cream);
+      color: #211c16;
+      font-weight: 950;
+      font-size: 0.78rem;
+    }
+
+    .model-legend .cn-sample {
+      background: #dbfff8;
+    }
+
+    .model-type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .model-type-card {
+      border: 3px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      min-height: 154px;
+    }
+
+    .model-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #dbfff8;
+      box-shadow: 3px 3px 0 rgba(23, 21, 18, 0.18);
+      font: 1000 1.25rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .model-type-card h4 {
+      margin: 0 0 8px;
+      color: #c93224;
+      font-size: 1.28rem;
+      line-height: 1.1;
+    }
+
+    .model-type-card p {
+      margin: 0;
+      color: #40372b;
+      font-weight: 820;
+      line-height: 1.45;
+    }
+
+    .model-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .model-tags span,
+    .choice-step span {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 28px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 0 9px;
+      background: var(--cream);
+      color: #211c16;
+      font-weight: 950;
+      font-size: 0.82rem;
+    }
+
+    .model-tags .cn-model {
+      background: #dbfff8;
+    }
+
+    .model-choice {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .choice-step {
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+    }
+
+    .choice-step.token-step {
+      position: relative;
+      z-index: 2;
+    }
+
+    .choice-step h4 {
+      margin: 10px 0 7px;
+      color: #c93224;
+      font-size: 1.08rem;
+      line-height: 1.16;
+    }
+
+    .choice-step p {
+      margin: 0;
+      color: #40372b;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .token-line {
+      display: block;
+    }
+
+    .marker-word {
+      position: relative;
+      display: inline-block;
+      margin: 0 0.1em;
+      padding: 0 0.18em;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 1000;
+      line-height: 1.1;
+      cursor: pointer;
+      isolation: isolate;
+    }
+
+    .marker-word::before {
+      content: "";
+      position: absolute;
+      left: -0.06em;
+      right: -0.08em;
+      bottom: 0.02em;
+      height: 0.62em;
+      z-index: -1;
+      border-radius: 999px 72% 84% 66%;
+      background: #ffe66d;
+      box-shadow: 0 0.08em 0 rgba(255, 96, 72, 0.32);
+      transform: rotate(-1.5deg);
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    .marker-word:hover::before,
+    .marker-word[aria-expanded="true"]::before {
+      background: #9ff7e6;
+      transform: rotate(1deg) scaleX(1.04);
+    }
+
+    .marker-word:focus-visible {
+      outline: 3px solid var(--teal);
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+
+    .glossary-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .glossary-popover {
+      width: min(1060px, 100%);
+      margin: 0 auto;
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #fff8bd;
+      box-shadow: 5px 5px 0 rgba(23, 21, 18, 0.18);
+      padding: clamp(14px, 1.45vw, 20px);
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.9fr);
+      gap: 10px 18px;
+      transform: rotate(-0.25deg);
+    }
+
+    .glossary-popover[hidden] {
+      display: none;
+    }
+
+    .glossary-popover h5 {
+      grid-column: 1 / -1;
+      margin: 0;
+      color: #c93224;
+      font-size: 1.16rem;
+      line-height: 1.1;
+    }
+
+    .glossary-popover p {
+      margin: 0;
+      color: #40372b;
+      font-weight: 850;
+      line-height: 1.42;
+    }
+
+    .glossary-popover ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: #40372b;
+      font-weight: 820;
+      line-height: 1.42;
+    }
+
+    .glossary-popover .glossary-example {
+      grid-column: 1 / -1;
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      background: #fffdf5;
+      padding: 9px;
+    }
+
+    .glossary-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(23, 21, 18, 0.34);
+      backdrop-filter: blur(2px);
+    }
+
+    .glossary-backdrop[hidden] {
+      display: none;
+    }
+
+    .glossary-float {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 90;
+      width: min(920px, calc(100vw - 44px));
+      max-height: min(620px, calc(100dvh - 44px));
+      margin: 0;
+      overflow: auto;
+      padding-top: 44px;
+      transform: translate(-50%, -50%) rotate(-0.25deg);
+    }
+
+    .glossary-float[hidden] {
+      display: none;
+    }
+
+    .glossary-close {
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      min-height: 30px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 0 10px;
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 2px 2px 0 rgba(23, 21, 18, 0.2);
+      font-weight: 1000;
+    }
+
+    .compare-prompt {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .bad {
+      background: #ffe2dc;
+    }
+
+    .good {
+      background: #dbfff8;
+    }
+
+    .prompt-card pre {
+      margin: 0;
+      white-space: pre-wrap;
+      color: #211c16;
+      font: 850 0.95rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .mini-table {
+      display: grid;
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 0.45fr 1fr 1fr;
+    }
+
+    .mini-row > div {
+      padding: 12px;
+      border-bottom: 2px solid var(--line);
+      border-right: 2px solid var(--line);
+      font-weight: 820;
+      line-height: 1.45;
+    }
+
+    .mini-row > div:last-child {
+      border-right: 0;
+    }
+
+    .mini-row:last-child > div {
+      border-bottom: 0;
+    }
+
+    .mini-row.head > div {
+      background: var(--yellow);
+      font-weight: 1000;
+    }
+
+    .metric-wall {
+      display: grid;
+      grid-template-columns: 1.12fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric-card {
+      min-height: 164px;
+      border: 4px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 5px 5px 0 rgba(23, 21, 18, 0.18);
+      padding: 16px;
+      display: grid;
+      align-content: space-between;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .metric-card.primary {
+      min-height: 340px;
+      grid-row: span 2;
+      background: var(--ink);
+      color: #fffdf5;
+      box-shadow: 8px 8px 0 #f7c948;
+    }
+
+    .metric-kicker {
+      color: #c93224;
+      font-weight: 1000;
+      line-height: 1.2;
+    }
+
+    .metric-card.primary .metric-kicker {
+      color: #f4dfbd;
+    }
+
+    .metric-number {
+      display: block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 4.7rem;
+      line-height: 0.84;
+      font-weight: 1000;
+      font-variant-numeric: tabular-nums;
+      color: var(--red);
+      word-break: keep-all;
+    }
+
+    .metric-card.primary .metric-number {
+      font-size: 8.8rem;
+      color: var(--yellow);
+    }
+
+    .metric-card p {
+      margin: 0;
+      color: #40372b;
+      font-weight: 850;
+      line-height: 1.42;
+    }
+
+    .metric-card.primary p {
+      color: #fff3d2;
+      font-size: 1.1rem;
+    }
+
+    .metric-footnote {
+      margin: -4px 0 0;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.5;
+    }
+
+    .iteration-map {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .direction-card {
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      padding: 14px;
+    }
+
+    .direction-card .lane {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      margin-bottom: 10px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 0 10px;
+      background: var(--yellow);
+      font-weight: 1000;
+      font-size: 0.84rem;
+    }
+
+    .direction-card h4 {
+      margin: 0 0 9px;
+      color: #c93224;
+      font-size: 1.18rem;
+      line-height: 1.15;
+    }
+
+    .direction-card p {
+      margin: 0;
+      color: #40372b;
+      font-weight: 800;
+      line-height: 1.52;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .timeline-card {
+      position: relative;
+      min-height: 146px;
+    }
+
+    .timeline-card .step {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 10px;
+      border: 3px solid var(--line);
+      border-radius: 50%;
+      background: var(--yellow);
+      font-weight: 1000;
+    }
+
+    .discussion {
+      border: 3px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #dbfff8;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+    }
+
+    .discussion b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.18rem;
+    }
+
+    .discussion ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: #30291f;
+      font-weight: 830;
+      line-height: 1.6;
+    }
+
+    .source-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .source-links::before {
+      content: "点开查看官方资料 / Click to open official sources";
+      flex: 0 0 100%;
+      width: fit-content;
+      border: 3px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: #dbfff8;
+      color: #211c16;
+      box-shadow: 3px 3px 0 rgba(23, 21, 18, 0.18);
+      font-size: 0.9rem;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .source-links a {
+      position: relative;
+      display: inline-grid;
+      align-content: center;
+      min-height: 58px;
+      border: 3px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 42px 7px 14px;
+      background: var(--yellow);
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.24);
+      color: #211c16;
+      font-weight: 950;
+      font-size: 0.9rem;
+      line-height: 1.05;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .source-links a::after {
+      content: "↗";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      background: #fffdf5;
+      display: grid;
+      place-items: center;
+      font-size: 0.78rem;
+      line-height: 1;
+      transform: translateY(-50%);
+    }
+
+    .source-links a .en-line {
+      margin-top: 3px;
+      color: #574632;
+      font-size: 0.68em;
+      line-height: 1.05;
+    }
+
+    .question-board {
+      padding: 18px;
+      background: #dbfff8;
+    }
+
+    .question-board h3 {
+      margin-bottom: 8px;
+    }
+
+    .canvas-lead {
+      margin: 0 0 14px;
+      color: #3d4f47;
+      font-weight: 880;
+      line-height: 1.5;
+      max-width: 92ch;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .action-card {
+      min-height: 150px;
+      border: 3px solid var(--line);
+      border-radius: 15px;
+      background: var(--paper);
+      padding: 14px;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      display: grid;
+      align-content: start;
+      gap: 8px;
+    }
+
+    .action-card .tag {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 28px;
+      align-items: center;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 0 9px;
+      background: var(--yellow);
+      font-weight: 1000;
+      font-size: 0.82rem;
+    }
+
+    .action-card h4 {
+      margin: 0;
+      color: #c93224;
+      font-size: 1.06rem;
+      line-height: 1.16;
+    }
+
+    .action-card p {
+      margin: 0;
+      color: #40372b;
+      font-weight: 820;
+      line-height: 1.45;
+    }
+
+    .canvas-sheet {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 12px;
+    }
+
+    .record-panel,
+    .speech-panel {
+      border: 3px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(23, 21, 18, 0.14);
+      padding: 16px;
+    }
+
+    .record-panel h4,
+    .speech-panel h4 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 1.25rem;
+      line-height: 1.15;
+    }
+
+    .record-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .record-row {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr 1fr;
+      min-height: 86px;
+      border: 3px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .record-cell {
+      padding: 12px;
+      border-right: 2px solid var(--line);
+      display: grid;
+      align-content: start;
+      gap: 6px;
+    }
+
+    .record-cell:last-child {
+      border-right: 0;
+    }
+
+    .record-cell b {
+      color: #c93224;
+      font-size: 0.98rem;
+      line-height: 1.2;
+    }
+
+    .record-cell span {
+      color: #6b614f;
+      font-weight: 820;
+      line-height: 1.4;
+      font-size: 0.92rem;
+    }
+
+    .blank-line {
+      min-height: 18px;
+      border-bottom: 2px solid rgba(33, 28, 22, 0.36);
+    }
+
+    .speech-list {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: #30291f;
+      font-weight: 850;
+      line-height: 1.68;
+    }
+
+    .question-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .question {
+      border: 3px solid var(--line);
+      border-radius: 15px;
+      background: var(--paper);
+      padding: 14px;
+      font-weight: 880;
+      line-height: 1.48;
+      min-height: 100px;
+    }
+
+    @media (max-width: 1220px) {
+      .frames,
+      .compare-text,
+      .analysis-hero,
+      .code-hero,
+      .question-grid,
+      .action-grid,
+      .canvas-sheet,
+      .code-lenses,
+      .code-stats,
+      .code-compare-grid,
+      .detail-top,
+      .detail-grid,
+      .detail-grid.two,
+      .detail-grid.four,
+      .metric-wall,
+      .iteration-map,
+      .model-showcase,
+      .model-type-grid,
+      .model-choice,
+      .compare-prompt {
+        grid-template-columns: 1fr;
+      }
+
+      .glossary-popover {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-card.primary {
+        min-height: 260px;
+        grid-row: auto;
+      }
+
+      .metric-card.primary .metric-number {
+        font-size: 6.4rem;
+      }
+
+      .head-actions {
+        justify-content: flex-start;
+      }
+
+      .hero-actions {
+        justify-content: flex-start;
+      }
+
+      .factors {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .timeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 18px, 1740px);
+      }
+
+      .observe-head {
+        grid-template-columns: 1fr;
+      }
+
+      .frames {
+        grid-template-columns: 1fr;
+      }
+
+      iframe {
+        min-height: 620px;
+      }
+
+      .factors {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline,
+      .mini-row,
+      .record-row {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-number {
+        font-size: 3.6rem;
+      }
+
+      .metric-card.primary .metric-number {
+        font-size: 5.2rem;
+      }
+
+      .model-type-card {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-row > div {
+        border-right: 0;
+      }
+
+      .record-cell {
+        border-right: 0;
+        border-bottom: 2px solid var(--line);
+      }
+
+      .record-cell:last-child {
+        border-bottom: 0;
+      }
+
+      .code-column pre {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="observe" id="observe" aria-label="第一轮观察">
+      <header class="observe-head">
+        <div>
+          <h1>先看作品，不给答案</h1>
+          <p>请先只观察左右两边的网页原型。每组找出 5 个不同点，先不要急着判断哪一个更好。</p>
+        </div>
+        <nav class="head-actions" aria-label="课堂操作">
+          <a class="link-btn" href="../student-original/website.html" target="_blank" rel="noreferrer">单独打开 A</a>
+          <a class="link-btn" href="teacher-version.html" target="_blank" rel="noreferrer">单独打开 B</a>
+          <button class="btn primary" id="revealBtn" type="button">进入差异拆解</button>
+        </nav>
+      </header>
+
+      <section class="frames" aria-label="两个原型">
+        <article class="frame-card">
+          <div class="frame-head">
+            <strong>A：第二节课原型</strong>
+            <small>website.html</small>
+          </div>
+          <iframe src="../student-original/website.html" title="A 第二节课原型"></iframe>
+        </article>
+
+        <article class="frame-card">
+          <div class="frame-head">
+            <strong>B：升级后的同题原型</strong>
+            <small>teacher-version.html</small>
+          </div>
+          <iframe src="teacher-version.html" title="B 升级后的同题原型"></iframe>
+        </article>
+      </section>
+    </section>
+
+    <section class="analysis" id="analysis" aria-label="第二轮差异拆解">
+      <header class="analysis-hero">
+        <div>
+          <h2>先拆差异，再问为什么</h2>
+          <p>同一个“吐槽变漫画”的想法，A 已经能跑起来，B 更像一个可以展示和使用的产品。先看它们到底差在哪里。</p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn code" id="codeCompareBtn" type="button">一键看代码对比</button>
+          <button class="btn" id="backBtn" type="button">回到观察页</button>
+        </div>
+      </header>
+
+      <section class="compare-text" aria-label="左右结论对比">
+        <article class="take-card">
+          <div class="take-head">
+            <strong>A 的价值</strong>
+            <span>从想法到网页</span>
+          </div>
+          <div class="take-body">
+            <h3>A 能用了。</h3>
+            <ul>
+              <li>已经可以输入、点击，并看到生成结果，速度很快。</li>
+              <li>但它还只是“能用”：用户是谁、在哪个场景使用、怎样算成功，还不够清楚。</li>
+              <li>流程还不完整：缺少语气选择、生成状态和检查流程。</li>
+              <li>视觉风格依赖默认模板和随机素材，产品记忆点不够稳定。</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="take-card teacher">
+          <div class="take-head">
+            <strong>B 的升级</strong>
+            <span>从网页到产品原型</span>
+          </div>
+          <div class="take-body">
+            <h3>保留同一个想法，但把它做成了一个完整的吐槽漫画生成器。</h3>
+            <ul>
+              <li>输入更具体：有样例、有字数限制、有明确的生成目标。</li>
+              <li>输出更完整：漫画、标题、台词、友善回复和标签一起出现。</li>
+              <li>流程更像产品：选择语气、生成状态、结果区、复制、保存。</li>
+              <li>检查更可信：生成前先确认友善、安全、适合展示。</li>
+            </ul>
+          </div>
+        </article>
+      </section>
+
+      <section class="factor-board" aria-label="影响结果的关键因素">
+        <h3>真正让结果变好的 6 个变量</h3>
+        <p class="factor-hint">点击任意变量，展开一张可以直接上课讲的小页面。</p>
+        <div class="factors">
+          <button class="factor" type="button" data-detail="models"><b>模型智能程度</b><span>更强的模型更懂代码、布局、状态和交互细节。</span></button>
+          <button class="factor" type="button" data-detail="prompt"><b>Prompt 质量</b><span>不是一句“做高级点”，而是说清用户、输入、输出和限制。</span></button>
+          <button class="factor" type="button" data-detail="product"><b>产品细化程度</b><span>从 idea 变成问题、场景、流程、按钮和结果标准。</span></button>
+          <button class="factor" type="button" data-detail="taste"><b>审美判断</b><span>颜色、字体、间距、层级和视觉记忆点都需要被指挥。</span></button>
+          <button class="factor" type="button" data-detail="iteration"><b>迭代能力</b><span>看结果，指出哪里不像产品，再让 AI 修改。</span></button>
+          <button class="factor" type="button" data-detail="safety"><b>安全边界</b><span>吐槽可以好笑，但不能伤人，所以要有人类检查。</span></button>
+        </div>
+      </section>
+
+      <section class="detail-stage" id="detailStage" aria-label="变量展开讲解">
+        <article class="detail-page" data-detail-page="models">
+          <header class="detail-top">
+            <div>
+              <h3>变量 1：模型智能程度</h3>
+              <p class="detail-lead-copy" data-no-auto-translate data-no-glossary>
+                <span>模型不是越贵越万能，而是要看任务：写方案、改代码、生成图片、生成视频，需要的是不同类型的能力。</span>
+                <span>课堂里先记住一个判断：选错模型，再努力写提示词也会很累。</span>
+                <span class="detail-term-row">
+                  <button class="marker-word" data-glossary="prompt" type="button" aria-expanded="false" aria-controls="glossaryFloat">prompt</button>
+                  <span>就是你写给 AI 的任务指令。</span>
+                </span>
+                <span class="en-line" lang="en">A model is not better just because it is expensive. Different tasks need different abilities: writing, coding, image generation, and video generation.</span>
+                <span class="en-line" lang="en">Remember this: the wrong model makes your instruction-writing much harder.</span>
+                <span class="detail-term-row en-line" lang="en">
+                  <button class="marker-word" data-glossary="prompt" type="button" aria-expanded="false" aria-controls="glossaryFloat">prompt</button>
+                  <span>means the task instruction you give to AI.</span>
+                </span>
+              </p>
+            </div>
+            <button class="btn" type="button" data-close-detail>收起</button>
+          </header>
+
+          <div class="detail-body">
+            <div class="model-showcase" aria-label="模型类型地图">
+              <article class="model-principle">
+                <span class="model-icon" aria-hidden="true">AI</span>
+                <h4>不是选最强，而是选对类型</h4>
+                <p>先问任务是什么，再选模型。写、改、画、拍，背后其实是四种不同能力。</p>
+                <div class="model-legend" aria-label="模型标签图例">
+                  <span>国际模型</span>
+                  <span class="cn-sample">国产/国内常用模型</span>
+                </div>
+              </article>
+
+              <div class="model-type-grid">
+                <article class="model-type-card">
+                  <span class="model-icon" aria-hidden="true">文</span>
+                  <div>
+                    <h4>文本 / 推理</h4>
+                    <p>写方案、拆问题、总结资料、设计产品逻辑。</p>
+                    <div class="model-tags" aria-label="文本模型例子">
+                      <span>GPT-5.5</span>
+                      <span>Claude Opus / Sonnet</span>
+                      <span>Gemini Pro</span>
+                      <span class="cn-model">豆包 Doubao</span>
+                      <span class="cn-model">通义千问 Qwen</span>
+                      <span class="cn-model">DeepSeek</span>
+                      <span class="cn-model">Kimi</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="model-type-card">
+                  <span class="model-icon" aria-hidden="true">&lt;/&gt;</span>
+                  <div>
+                    <h4>代码 / 网页</h4>
+                    <p>读文件、改 HTML/CSS/JS、调试报错、跑测试。</p>
+                    <div class="model-tags" aria-label="代码模型例子">
+                      <span>Codex</span>
+                      <span>Claude Code</span>
+                      <span>Gemini Coding</span>
+                      <span class="cn-model">Qwen Coder</span>
+                      <span class="cn-model">DeepSeek Coder</span>
+                      <span class="cn-model">Kimi K2</span>
+                      <span class="cn-model">GLM</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="model-type-card">
+                  <span class="model-icon" aria-hidden="true">图</span>
+                  <div>
+                    <h4>图像生成</h4>
+                    <p>生成角色、漫画底图、封面、产品视觉素材。</p>
+                    <div class="model-tags" aria-label="图像模型例子">
+                      <span>gpt-image</span>
+                      <span>Midjourney</span>
+                      <span>Gemini Image</span>
+                      <span class="cn-model">即梦 Jimeng</span>
+                      <span class="cn-model">Seedream</span>
+                      <span class="cn-model">通义万相</span>
+                      <span class="cn-model">混元图像</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="model-type-card">
+                  <span class="model-icon" aria-hidden="true">▶</span>
+                  <div>
+                    <h4>视频生成</h4>
+                    <p>生成短片、广告分镜、动态演示和声音画面。</p>
+                    <div class="model-tags" aria-label="视频模型例子">
+                      <span>Sora</span>
+                      <span>Veo</span>
+                      <span>Runway</span>
+                      <span class="cn-model">Seedance</span>
+                      <span class="cn-model">即梦 Jimeng</span>
+                      <span class="cn-model">可灵 Kling</span>
+                      <span class="cn-model">海螺 Hailuo</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div class="model-choice" aria-label="模型选择四步">
+              <article class="choice-step">
+                <span>Step 1</span>
+                <h4>先说任务</h4>
+                <p>我要写文字、改网页、生成图，还是做视频？</p>
+              </article>
+              <article class="choice-step">
+                <span>Step 2</span>
+                <h4>再看质量</h4>
+                <p>是课堂草稿，还是要拿出去展示的作品？</p>
+              </article>
+              <article class="choice-step token-step">
+                <span>Step 3</span>
+                <h4>然后看成本</h4>
+                <p class="token-line">
+                  <span>免费额度、订阅费、使用量都不一样。</span>
+                  <span class="en-line" lang="en">Free <button class="marker-word" data-glossary="quota" type="button" aria-expanded="false" aria-controls="glossaryQuota">quota</button>, <button class="marker-word" data-glossary="subscription" type="button" aria-expanded="false" aria-controls="glossarySubscription">subscription fees</button>, and <button class="marker-word" id="tokenTrigger" data-glossary="token" type="button" aria-expanded="false" aria-controls="glossaryToken">token</button> usage all affect cost.</span>
+                </p>
+              </article>
+              <article class="choice-step">
+                <span>Step 4</span>
+                <h4>最后看结果</h4>
+                <p data-no-auto-translate>
+                  <span>生成后要人类检查，再决定是否继续迭代。</span>
+                  <span class="en-line" lang="en">After generation, a human checks it before deciding whether to <button class="marker-word" data-glossary="iterate" type="button" aria-expanded="false" aria-controls="glossaryIterate">iterate</button>.</span>
+                </p>
+              </article>
+            </div>
+
+            <div class="glossary-stack" data-no-auto-translate aria-label="AI 术语解释卡片">
+              <div class="glossary-popover" id="glossaryQuota" data-glossary-card="quota" hidden>
+                <h5>quota 是什么？<span class="en-line" lang="en">What is quota?</span></h5>
+                <p>Quota 指你在一段时间内可以使用的额度或上限，比如“每天可以生成多少次”“每月免费用多少量”。<span class="en-line" lang="en">Quota means the amount or limit you can use during a period, such as how many generations per day or how much free usage per month.</span></p>
+                <ul>
+                  <li>免费额度用完后，可能要等待重置或升级付费。<span class="en-line" lang="en">After the free quota is used up, you may need to wait for a reset or upgrade.</span></li>
+                  <li>不同工具的 quota 不一样，所以同一个项目的成本也会不一样。<span class="en-line" lang="en">Different tools give different quotas, so the same project can have different costs.</span></li>
+                </ul>
+                <p class="glossary-example">课堂记法：quota 是“这段时间我还能用多少”的额度。<span class="en-line" lang="en">Classroom note: quota means “how much I can still use in this period.”</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossarySubscription" data-glossary-card="subscription" hidden>
+                <h5>subscription fees 是什么？<span class="en-line" lang="en">What are subscription fees?</span></h5>
+                <p>Subscription fees 指订阅费，也就是按月或按年付费，换取更高额度、更强模型或更多功能。<span class="en-line" lang="en">Subscription fees are monthly or yearly payments for higher limits, stronger models, or more features.</span></p>
+                <ul>
+                  <li>它像“会员费”，不一定每次使用都单独扣钱。<span class="en-line" lang="en">It is like a membership fee; each use may not be charged separately.</span></li>
+                  <li>付费前要看清楚：包含哪些模型、多少额度、能不能取消。<span class="en-line" lang="en">Before paying, check which models are included, how much quota you get, and whether you can cancel.</span></li>
+                </ul>
+                <p class="glossary-example">课堂记法：subscription fees 是“先买会员，再使用服务”的费用。<span class="en-line" lang="en">Classroom note: subscription fees mean “pay for membership, then use the service.”</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryToken" data-glossary-card="token" hidden>
+                <h5>token 是什么？<span class="en-line" lang="en">What is a token?</span></h5>
+                <p>Token 是模型处理文本的基本计量单位。它不等于一个完整的汉字或英文单词，而是模型把输入和输出拆分后的文字片段。<span class="en-line" lang="en">Tokens are the basic units a model uses to process text. They are not the same as one Chinese character or one English word; they are text pieces created when the model splits input and output.</span></p>
+                <ul>
+                  <li>输入和输出都会计算 token。<span class="en-line" lang="en">Both input and output count as tokens.</span></li>
+                  <li>问题越长、回答越长、代码越多，token 消耗越高。<span class="en-line" lang="en">Longer questions, longer answers, and more code use more tokens.</span></li>
+                  <li>很多 <button class="marker-word" data-glossary="api" type="button" aria-expanded="false" aria-controls="glossaryApi">API</button> 按每 100 万 token 计费，所以 token 会影响成本。<span class="en-line" lang="en">Many APIs charge per 1 million tokens, so tokens affect cost.</span></li>
+                </ul>
+                <p class="glossary-example">课堂记法：token 是衡量 AI 读写了多少文字的单位。<span class="en-line" lang="en">Classroom note: a token is a unit for measuring how much text the AI reads and writes.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryApi" data-glossary-card="api" hidden>
+                <h5>API 是什么？<span class="en-line" lang="en">What is an API?</span></h5>
+                <p>API 是“应用程序接口”。你可以把它理解成网页或软件调用 AI 服务的正式入口：网页把请求发给 API，API 再把 AI 的结果送回来。<span class="en-line" lang="en">API means Application Programming Interface. It is the official doorway a webpage or app uses to call an AI service: the webpage sends a request to the API, and the API returns the AI result.</span></p>
+                <ul>
+                  <li>普通用户通常在聊天框里使用 AI。<span class="en-line" lang="en">Regular users often use AI in a chat box.</span></li>
+                  <li>开发者会用 API 把 AI 接进自己的网站、App 或工具里。<span class="en-line" lang="en">Developers use APIs to connect AI to their own websites, apps, or tools.</span></li>
+                </ul>
+                <p class="glossary-example">课堂记法：API 是“我的网页去找 AI 帮忙的通道”。<span class="en-line" lang="en">Classroom note: an API is the channel my webpage uses to ask AI for help.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryIterate" data-glossary-card="iterate" hidden>
+                <h5>iterate 是什么？<span class="en-line" lang="en">What does iterate mean?</span></h5>
+                <p>Iterate 指一轮一轮改进作品。它不是全部推倒重做，而是看结果、找问题、提出更具体的修改要求，再检查新结果。<span class="en-line" lang="en">Iterate means improving a work round by round. It does not mean starting over; it means checking the result, finding a problem, asking for a specific change, and checking again.</span></p>
+                <ul>
+                  <li>第 1 轮：先让作品能跑起来。<span class="en-line" lang="en">Round 1: make the work run.</span></li>
+                  <li>第 2 轮：让它更像真实产品。<span class="en-line" lang="en">Round 2: make it feel more like a real product.</span></li>
+                  <li>第 3 轮：修细节、查安全、准备展示。<span class="en-line" lang="en">Round 3: polish details, check safety, and prepare to present.</span></li>
+                </ul>
+                <p class="glossary-example">课堂记法：iterate = 发现一个问题，改一轮，留下前后对比。<span class="en-line" lang="en">Classroom note: iterate = find one problem, improve one round, and keep before/after evidence.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryPrompt" data-glossary-card="prompt" hidden>
+                <h5>prompt 是什么？<span class="en-line" lang="en">What is a prompt?</span></h5>
+                <p>Prompt 就是你给 AI 的任务说明。它不只是“问一句话”，而是告诉 AI：目标是什么、用户是谁、输入输出是什么、有什么限制。<span class="en-line" lang="en">A prompt is the instruction you give to AI. It tells the AI the goal, user, input, output, and limits.</span></p>
+                <p class="glossary-example">课堂记法：prompt 是“给 AI 的任务单”。<span class="en-line" lang="en">Classroom note: a prompt is a task brief for AI.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryPrototype" data-glossary-card="prototype" hidden>
+                <h5>prototype 是什么？<span class="en-line" lang="en">What is a prototype?</span></h5>
+                <p>Prototype 是产品原型，也就是还没完全做完、但已经能让别人看懂和试用的早期版本。它用来验证想法，不是最终成品。<span class="en-line" lang="en">A prototype is an early version of a product that people can understand and try. It tests an idea before the final product is built.</span></p>
+                <p class="glossary-example">课堂记法：prototype = 先做一个能试的版本。<span class="en-line" lang="en">Classroom note: prototype = a version people can try first.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryDemo" data-glossary-card="demo" hidden>
+                <h5>demo 是什么？<span class="en-line" lang="en">What is a demo?</span></h5>
+                <p>Demo 是演示版，重点是让别人快速看到“这个想法大概怎么工作”。它可以很粗糙，但必须能展示核心功能。<span class="en-line" lang="en">A demo is a demonstration version. It quickly shows how an idea works, even if it is not polished yet.</span></p>
+                <p class="glossary-example">课堂记法：demo = 给别人看的功能演示。<span class="en-line" lang="en">Classroom note: demo = a feature shown to others.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryGit" data-glossary-card="git" hidden>
+                <h5>Git 是什么？<span class="en-line" lang="en">What is Git?</span></h5>
+                <p>Git 是程序员常用的版本管理工具。它会记录项目每一次重要修改，方便回看、比较、恢复，也方便多人一起做同一个项目。<span class="en-line" lang="en">Git is a version-control tool. It records important changes so people can review, compare, restore, and collaborate.</span></p>
+                <p class="glossary-example">课堂记法：Git 像项目的“存档和时间线”。<span class="en-line" lang="en">Classroom note: Git is like a project's save history and timeline.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryCsv" data-glossary-card="csv" hidden>
+                <h5>CSV 是什么？<span class="en-line" lang="en">What is CSV?</span></h5>
+                <p>CSV 是一种很简单的数据表文件。它像 Excel 表格，但本质是纯文字，常用来存一行一行的数据。<span class="en-line" lang="en">CSV is a simple data-table file. It is like a spreadsheet saved as plain text.</span></p>
+                <p class="glossary-example">课堂记法：CSV = 用文字存表格。<span class="en-line" lang="en">Classroom note: CSV = a table stored as text.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryJson" data-glossary-card="json" hidden>
+                <h5>JSON 是什么？<span class="en-line" lang="en">What is JSON?</span></h5>
+                <p>JSON 是网页和程序很常用的数据格式。它用“名字: 内容”的结构保存信息，机器读起来很方便。<span class="en-line" lang="en">JSON is a common data format for webpages and programs. It stores information in name-value structures that machines can read easily.</span></p>
+                <p class="glossary-example">课堂记法：JSON = 让网页容易读取的数据包。<span class="en-line" lang="en">Classroom note: JSON = a data package that webpages can read.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryTsv" data-glossary-card="tsv" hidden>
+                <h5>TSV 是什么？<span class="en-line" lang="en">What is TSV?</span></h5>
+                <p>TSV 和 CSV 很像，也是一种表格数据文件。区别是：TSV 用 Tab 分隔每一列，CSV 常用逗号分隔每一列。<span class="en-line" lang="en">TSV is similar to CSV. It stores table data, but uses tabs between columns, while CSV often uses commas.</span></p>
+                <p class="glossary-example">课堂记法：TSV = 另一种用文字存表格的格式。<span class="en-line" lang="en">Classroom note: TSV = another text format for tables.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryCommand" data-glossary-card="command" hidden>
+                <h5>.command 文件是什么？<span class="en-line" lang="en">What is a .command file?</span></h5>
+                <p>.command 是 macOS 上可以双击运行的命令文件。它常用来把一串重复操作打包成一个按钮。<span class="en-line" lang="en">A .command file is a macOS command file you can double-click to run. It turns repeated steps into one clickable action.</span></p>
+                <p class="glossary-example">课堂记法：.command = 电脑里的“一键执行按钮”。<span class="en-line" lang="en">Classroom note: .command = a one-click action button on the computer.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryDebug" data-glossary-card="debug" hidden>
+                <h5>debug / 调试 是什么？<span class="en-line" lang="en">What does debug mean?</span></h5>
+                <p>Debug 指找到程序哪里出错，并一步步修好。它不是随便改，而是先看现象，再找原因，再验证修复有没有成功。<span class="en-line" lang="en">Debug means finding what is wrong in a program and fixing it step by step: observe, find the cause, and verify the fix.</span></p>
+                <p class="glossary-example">课堂记法：debug = 找 bug 的原因并修好。<span class="en-line" lang="en">Classroom note: debug = find why a bug happens and fix it.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryBug" data-glossary-card="bug" hidden>
+                <h5>bug 是什么？<span class="en-line" lang="en">What is a bug?</span></h5>
+                <p>Bug 是程序里的错误或异常现象，比如按钮点了没反应、页面显示错、数据没有保存。<span class="en-line" lang="en">A bug is an error or unexpected behavior in a program, such as a broken button, wrong display, or unsaved data.</span></p>
+                <p class="glossary-example">课堂记法：bug = 作品没有按预期工作。<span class="en-line" lang="en">Classroom note: bug = the work does not behave as expected.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryHtmlCssJs" data-glossary-card="html-css-js" hidden>
+                <h5>HTML / CSS / JS 是什么？<span class="en-line" lang="en">What are HTML / CSS / JS?</span></h5>
+                <p>这是网页的三件套：HTML 管内容结构，CSS 管视觉样式，JS 管点击后的行为。<span class="en-line" lang="en">They are the three core parts of a webpage: HTML controls structure, CSS controls style, and JS controls behavior.</span></p>
+                <p class="glossary-example">课堂记法：HTML 是骨架，CSS 是衣服，JS 是动作。<span class="en-line" lang="en">Classroom note: HTML is the skeleton, CSS is the outfit, and JS is the action.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryHtml" data-glossary-card="html" hidden>
+                <h5>HTML 是什么？<span class="en-line" lang="en">What is HTML?</span></h5>
+                <p>HTML 负责网页上“有什么”：标题、段落、按钮、输入框、图片区域和结果区都先由 HTML 放出来。<span class="en-line" lang="en">HTML defines what exists on a webpage: titles, paragraphs, buttons, inputs, images, and result areas.</span></p>
+                <p class="glossary-example">课堂记法：HTML = 网页骨架。<span class="en-line" lang="en">Classroom note: HTML = webpage skeleton.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryCss" data-glossary-card="css" hidden>
+                <h5>CSS 是什么？<span class="en-line" lang="en">What is CSS?</span></h5>
+                <p>CSS 负责网页“长什么样”：颜色、字体、间距、圆角、阴影、动画和不同屏幕尺寸的排版。<span class="en-line" lang="en">CSS controls how a webpage looks: color, type, spacing, corners, shadows, animation, and responsive layout.</span></p>
+                <p class="glossary-example">课堂记法：CSS = 网页的视觉设计规则。<span class="en-line" lang="en">Classroom note: CSS = visual design rules for a webpage.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryJavascript" data-glossary-card="javascript" hidden>
+                <h5>JavaScript / JS 是什么？<span class="en-line" lang="en">What is JavaScript / JS?</span></h5>
+                <p>JavaScript 简称 JS，负责网页“会做什么”：点击按钮、检查输入、调用 AI、显示结果、复制和保存。<span class="en-line" lang="en">JavaScript, or JS, controls what a webpage can do: clicks, input checks, AI calls, results, copy, and save.</span></p>
+                <p class="glossary-example">课堂记法：JS = 网页的动作和逻辑。<span class="en-line" lang="en">Classroom note: JS = webpage actions and logic.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryTailwind" data-glossary-card="tailwind" hidden>
+                <h5>Tailwind 是什么？<span class="en-line" lang="en">What is Tailwind?</span></h5>
+                <p>Tailwind 是一个 CSS 工具库，可以用很多短类名快速写样式。它很快，但如果只堆类名，页面也可能变得难维护。<span class="en-line" lang="en">Tailwind is a CSS utility library. It uses short class names to style quickly, but too many classes can become hard to maintain.</span></p>
+                <p class="glossary-example">课堂记法：Tailwind = 快速写样式的工具箱。<span class="en-line" lang="en">Classroom note: Tailwind = a quick styling toolbox.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryResponsive" data-glossary-card="responsive" hidden>
+                <h5>responsive / 响应式 是什么？<span class="en-line" lang="en">What does responsive mean?</span></h5>
+                <p>响应式设计指网页会根据屏幕大小自动调整排版。电脑、平板、手机打开时，都应该能看清、能操作。<span class="en-line" lang="en">Responsive design means a webpage adjusts to different screen sizes, so it works on laptops, tablets, and phones.</span></p>
+                <p class="glossary-example">课堂记法：响应式 = 换屏幕也不乱。<span class="en-line" lang="en">Classroom note: responsive = the layout stays usable on different screens.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryComponent" data-glossary-card="component" hidden>
+                <h5>component / 组件 是什么？<span class="en-line" lang="en">What is a component?</span></h5>
+                <p>组件是可以重复使用的一小块界面或功能，比如按钮、卡片、输入框。做成组件后，页面会更统一，也更容易修改。<span class="en-line" lang="en">A component is a reusable piece of interface or function, such as a button, card, or input. Components keep pages consistent and easier to change.</span></p>
+                <p class="glossary-example">课堂记法：组件 = 可以重复使用的页面零件。<span class="en-line" lang="en">Classroom note: component = reusable page part.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryDesignSystem" data-glossary-card="design-system" hidden>
+                <h5>design system / 设计系统 是什么？<span class="en-line" lang="en">What is a design system?</span></h5>
+                <p>设计系统是一套统一规则，规定颜色、字体、按钮、卡片、间距和交互状态。它让多个页面看起来像同一个产品。<span class="en-line" lang="en">A design system is a shared rule set for colors, type, buttons, cards, spacing, and states. It makes many pages feel like one product.</span></p>
+                <p class="glossary-example">课堂记法：设计系统 = 让页面统一的规则书。<span class="en-line" lang="en">Classroom note: design system = the rulebook that keeps pages consistent.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossarySourceFolders" data-glossary-card="source-folders" hidden>
+                <h5>src/ 和 scripts/ 是什么？<span class="en-line" lang="en">What are src/ and scripts/ folders?</span></h5>
+                <p>它们通常是项目里的代码文件夹。src/ 多放网站核心代码，scripts/ 多放自动处理、同步、发布这类辅助脚本。<span class="en-line" lang="en">They are code folders in a project. src/ often stores the main site code, while scripts/ stores helper scripts for automation, syncing, or publishing.</span></p>
+                <p class="glossary-example">课堂记法：src/ 是主工程区，scripts/ 是工具区。<span class="en-line" lang="en">Classroom note: src/ is the main work area; scripts/ is the tool area.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryPipeline" data-glossary-card="pipeline" hidden>
+                <h5>pipeline / 管线 是什么？<span class="en-line" lang="en">What is a pipeline?</span></h5>
+                <p>Pipeline 指一串固定步骤连起来自动执行，比如同步、测试、构建、发布。它的作用是减少重复劳动和漏步骤。<span class="en-line" lang="en">A pipeline is a connected set of steps that run in order, such as syncing, testing, building, and publishing.</span></p>
+                <p class="glossary-example">课堂记法：pipeline = 把重复流程排成一条自动路线。<span class="en-line" lang="en">Classroom note: pipeline = a repeatable route for work steps.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryBuild" data-glossary-card="build" hidden>
+                <h5>build / 构建 是什么？<span class="en-line" lang="en">What does build mean?</span></h5>
+                <p>Build 指把代码整理、打包成浏览器或服务器可以正式使用的版本。它像把草稿整理成可交付文件。<span class="en-line" lang="en">Build means preparing and packaging code into a version that a browser or server can use.</span></p>
+                <p class="glossary-example">课堂记法：build = 把代码打包成可发布版本。<span class="en-line" lang="en">Classroom note: build = package code for release.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryDeploy" data-glossary-card="deploy" hidden>
+                <h5>deploy / 部署 是什么？<span class="en-line" lang="en">What does deploy mean?</span></h5>
+                <p>Deploy 指把做好的网站或应用放到线上，让别人能通过链接访问。<span class="en-line" lang="en">Deploy means putting a finished website or app online so others can open it with a link.</span></p>
+                <p class="glossary-example">课堂记法：deploy = 把作品发布到网上。<span class="en-line" lang="en">Classroom note: deploy = publish the work online.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryDeepfake" data-glossary-card="deepfake" hidden>
+                <h5>deepfake / 深伪 是什么？<span class="en-line" lang="en">What is a deepfake?</span></h5>
+                <p>Deepfake 指用 AI 伪造看起来很像真实人物的图片、声音或视频。它可能用于娱乐，也可能造成误导和伤害。<span class="en-line" lang="en">A deepfake is AI-made media that imitates a real person's face, voice, or video. It can entertain, but it can also mislead or harm.</span></p>
+                <p class="glossary-example">课堂记法：deepfake = 像真的 AI 假内容。<span class="en-line" lang="en">Classroom note: deepfake = AI fake content that looks real.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryWatermark" data-glossary-card="watermark" hidden>
+                <h5>watermark / 水印 是什么？<span class="en-line" lang="en">What is a watermark?</span></h5>
+                <p>Watermark 是放在图片或视频上的标记，用来说明来源、版权或“这是 AI 生成内容”。<span class="en-line" lang="en">A watermark is a mark on an image or video that shows source, ownership, or that the content was AI-generated.</span></p>
+                <p class="glossary-example">课堂记法：watermark = 给内容贴身份标签。<span class="en-line" lang="en">Classroom note: watermark = an identity label for content.</span></p>
+              </div>
+
+              <div class="glossary-popover" id="glossaryPrivacy" data-glossary-card="privacy" hidden>
+                <h5>privacy / 隐私 是什么？<span class="en-line" lang="en">What is privacy?</span></h5>
+                <p>Privacy 指一个人不想随便公开的个人信息，比如真实姓名、照片、住址、联系方式、账号和聊天内容。<span class="en-line" lang="en">Privacy means personal information people should not share casually, such as real names, photos, addresses, contacts, accounts, and chats.</span></p>
+                <p class="glossary-example">课堂记法：privacy = 不能随便公开的个人信息。<span class="en-line" lang="en">Classroom note: privacy = personal information that should not be casually exposed.</span></p>
+              </div>
+            </div>
+
+            <div class="discussion">
+              <b>课堂讨论</b>
+              <ul>
+                <li>为什么“同样是 AI”，写作文厉害的模型不一定最会改网页？</li>
+                <li>如果预算有限，你会把钱花在更强模型、更多迭代，还是更好的素材上？</li>
+              </ul>
+            </div>
+
+            <nav class="source-links" aria-label="模型和价格来源">
+              <a href="https://developers.openai.com/api/docs/models" target="_blank" rel="noreferrer">OpenAI 模型</a>
+              <a href="https://developers.openai.com/api/docs/pricing" target="_blank" rel="noreferrer">OpenAI 价格</a>
+              <a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noreferrer">Claude 模型</a>
+              <a href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noreferrer">Claude 价格</a>
+              <a href="https://ai.google.dev/gemini-api/docs/models" target="_blank" rel="noreferrer">Gemini 模型</a>
+              <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer">Gemini 价格</a>
+              <a href="https://deepmind.google/models/veo/" target="_blank" rel="noreferrer">Google Veo</a>
+              <a href="https://runwayml.com/pricing" target="_blank" rel="noreferrer">Runway 价格</a>
+              <a href="https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans" target="_blank" rel="noreferrer">Midjourney 订阅</a>
+            </nav>
+          </div>
+        </article>
+
+        <article class="detail-page" data-detail-page="prompt">
+          <header class="detail-top">
+            <div>
+              <h3 class="detail-title-copy" data-no-auto-translate data-no-glossary>
+                <span>变量 2：</span>
+                <button class="marker-word detail-title-term" data-glossary="prompt" type="button" aria-expanded="false" aria-controls="glossaryFloat">Prompt</button>
+                <span>质量</span>
+                <span class="en-line" lang="en">Variable 2:
+                  <button class="marker-word detail-title-term" data-glossary="prompt" type="button" aria-expanded="false" aria-controls="glossaryFloat">Prompt</button>
+                  quality
+                </span>
+              </h3>
+              <p class="detail-lead-copy" data-no-auto-translate data-no-glossary>
+                <span>好的提示词不是“说得高级”，而是把任务变清楚。</span>
+                <span class="detail-term-row">
+                  <button class="marker-word" data-glossary="prompt" type="button" aria-expanded="false" aria-controls="glossaryFloat">prompt</button>
+                  <span>要说清：谁用、为什么用、输入什么、输出什么、不能做什么、做到什么才算好。</span>
+                </span>
+                <span class="en-line" lang="en">A good instruction is not fancy wording. It makes the task clear.</span>
+                <span class="detail-term-row en-line" lang="en">
+                  <button class="marker-word" data-glossary="prompt" type="button" aria-expanded="false" aria-controls="glossaryFloat">prompt</button>
+                  <span>should clarify: who uses it, why, input, output, limits, and what counts as good.</span>
+                </span>
+              </p>
+            </div>
+            <button class="btn" type="button" data-close-detail>收起</button>
+          </header>
+
+          <div class="detail-body">
+            <div class="detail-grid">
+              <article class="lesson-box">
+                <h4>一个好 prompt 的 7 块积木</h4>
+                <p>角色、目标、背景、输入、输出格式、限制、安全边界。越像产品说明书，AI 越容易稳定发挥。</p>
+              </article>
+              <article class="lesson-box">
+                <h4>给格式，比给形容词更重要</h4>
+                <p>不要只说“高级一点”。要说页面包含哪些区块、按钮怎么叫、生成结果有哪些字段、失败时显示什么。</p>
+              </article>
+              <article class="lesson-box">
+                <h4>给例子，能快速校准风格</h4>
+                <p>给一个“输入样例”和“理想输出样例”，模型会更容易明白你想要的是搞笑、友善，还是认真。</p>
+              </article>
+            </div>
+
+            <div class="compare-prompt">
+              <article class="prompt-card bad">
+                <h4>不够好的 prompt</h4>
+                <pre>帮我做一个高级一点的吐槽网站。
+要好看，要有 AI 感。</pre>
+              </article>
+              <article class="prompt-card good">
+                <h4>更好的 prompt</h4>
+                <pre>你是产品设计老师。请把“吐槽星球”做成一个给 10-12 岁学生用的漫画生成器。
+
+用户：小学生，想把烦恼变成友善、好笑、可分享的漫画。
+输入：一句不超过 80 字的吐槽。
+流程：选择语气 -> 点击生成 -> 显示生成中 -> 得到漫画、标题、台词、小建议。
+限制：不能攻击真实同学、老师、外貌、家庭；不能收集隐私。
+输出：单文件 HTML，适合投影展示，手机也能读。</pre>
+              </article>
+            </div>
+
+            <div class="mini-table" role="table" aria-label="prompt 结构">
+              <div class="mini-row head" role="row">
+                <div role="columnheader">部分</div>
+                <div role="columnheader">写什么</div>
+                <div role="columnheader">例子</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">目标</div>
+                <div role="cell">你希望 AI 完成什么</div>
+                <div role="cell">把一句吐槽改写成漫画产品原型。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">约束</div>
+                <div role="cell">哪些事情不能做</div>
+                <div role="cell">不能伤人、不能泄露隐私、不能做登录付款。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">标准</div>
+                <div role="cell">怎样才算好</div>
+                <div role="cell">投影清楚、能复制结果、生成失败也有提示。</div>
+              </div>
+            </div>
+
+            <div class="discussion">
+              <b>课堂练习</b>
+              <ul>
+                <li>把“帮我做个网站”改写成一个包含目标、用户、输入、输出、限制的 prompt。</li>
+                <li>让同桌找出你 prompt 里最模糊的一句话，把它改成可检查的标准。</li>
+              </ul>
+            </div>
+
+            <nav class="source-links" aria-label="prompt 来源">
+              <a href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noreferrer">OpenAI Prompt Engineering</a>
+              <a href="https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api" target="_blank" rel="noreferrer">OpenAI 最佳实践</a>
+              <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noreferrer">Claude Prompt 最佳实践</a>
+              <a href="https://ai.google.dev/gemini-api/docs/prompting-strategies" target="_blank" rel="noreferrer">Gemini Prompt 策略</a>
+            </nav>
+          </div>
+        </article>
+
+        <article class="detail-page" data-detail-page="product">
+          <header class="detail-top">
+            <div>
+              <h3>变量 3：产品细化程度</h3>
+              <p class="detail-lead-copy" data-no-auto-translate data-no-glossary>
+                <span>产品细化，就是把一个“灵感”拆成用户、场景、流程、按钮、状态、结果和失败兜底。</span>
+                <span>越细化，AI 越像在帮你做产品，而不是随机生成一张网页。</span>
+                <span class="en-line" lang="en">Product detail means breaking an idea into user, context, flow, buttons, states, results, and fallback.</span>
+                <span class="en-line" lang="en">The more detailed it is, the more AI helps create a product instead of a random page.</span>
+              </p>
+            </div>
+            <button class="btn" type="button" data-close-detail>收起</button>
+          </header>
+
+          <div class="detail-body">
+            <div class="mini-table" role="table" aria-label="产品细化对照">
+              <div class="mini-row head" role="row">
+                <div role="columnheader">粗糙想法</div>
+                <div role="columnheader">细化后</div>
+                <div role="columnheader">AI 会更清楚什么</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">做一个吐槽网站</div>
+                <div role="cell">给小学生，把一句烦恼改写成友善漫画。</div>
+                <div role="cell">用户是谁，为什么需要这个产品。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">生成图片</div>
+                <div role="cell">输出漫画图、标题、台词、友善回复、保存按钮。</div>
+                <div role="cell">结果不只是“有图”，而是能展示、能分享。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">好看一点</div>
+                <div role="cell">投影可读、手机可用、按钮清楚、有生成状态。</div>
+                <div role="cell">设计标准变成能检查的要求。</div>
+              </div>
+            </div>
+
+            <div class="detail-grid two">
+              <article class="lesson-box">
+                <h4>最小产品说明书</h4>
+                <p>谁在什么场景遇到什么问题，输入什么，AI 做什么，输出什么，人怎么检查，失败怎么办。把这 7 句写清楚，原型会立刻像产品。</p>
+              </article>
+              <article class="lesson-box">
+                <h4>细化不是加功能</h4>
+                <p>细化是让每个功能更有理由。比如“保存图片”不是因为酷，而是因为学生要把漫画带走、发给家长或放进作品集。</p>
+              </article>
+            </div>
+
+            <div class="compare-prompt">
+              <article class="prompt-card bad">
+                <h4>未细化</h4>
+                <pre>页面有输入框和生成按钮。
+生成一个漫画。</pre>
+              </article>
+              <article class="prompt-card good">
+                <h4>细化后</h4>
+                <pre>输入区：一句吐槽，最多 80 字，附 3 个示例。
+语气区：轻松、夸张、温柔 3 个模式。
+生成中：显示“正在把情绪变成漫画”。
+结果区：漫画图、标题、主角台词、友善建议、复制文案、保存图片。
+安全区：提醒不要点名攻击真实的人。</pre>
+              </article>
+            </div>
+
+            <div class="discussion">
+              <b>课堂练习</b>
+              <ul>
+                <li>选一个自己的项目，用 7 句话写出最小产品说明书。</li>
+                <li>删掉一个“只是看起来酷”的功能，换成一个用户真的会用的功能。</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-page" data-detail-page="taste">
+          <header class="detail-top">
+            <div>
+              <h3>变量 4：审美判断</h3>
+              <p>AI 可以生成页面，但它不会自动知道“什么样的页面值得停留”。审美判断就是你能看出：哪里乱、哪里空、哪里没有层级、哪里不像一个真正的产品。</p>
+            </div>
+            <button class="btn" type="button" data-close-detail>收起</button>
+          </header>
+
+          <div class="detail-body">
+            <div class="detail-grid">
+              <article class="site-card">
+                <h4>Awwwards</h4>
+                <p>看世界级网页如何做第一屏、字体、动效和视觉记忆点。适合让学生总结“好网站的共同点”。</p>
+                <a href="https://www.awwwards.com/websites/" target="_blank" rel="noreferrer">打开案例库</a>
+              </article>
+              <article class="site-card">
+                <h4>Stripe</h4>
+                <p>复杂产品也可以讲得清楚：层级、图标、留白、卡片密度都服务于理解。</p>
+                <a href="https://stripe.com/payments/checkout" target="_blank" rel="noreferrer">看 Checkout</a>
+              </article>
+              <article class="site-card">
+                <h4>Apple</h4>
+                <p>大图、少字、清晰节奏，让人第一眼知道产品是什么，第二眼才慢慢看细节。</p>
+                <a href="https://www.apple.com/airpods-pro/" target="_blank" rel="noreferrer">看产品页</a>
+              </article>
+              <article class="site-card">
+                <h4>Linear</h4>
+                <p>非常克制的颜色和排版，适合观察“专业工具为什么不需要很花”。</p>
+                <a href="https://linear.app/" target="_blank" rel="noreferrer">看官网</a>
+              </article>
+              <article class="site-card">
+                <h4>Notion</h4>
+                <p>把复杂概念变成容易理解的模块，适合看信息组织和视觉节奏。</p>
+                <a href="https://www.notion.com/product" target="_blank" rel="noreferrer">看产品页</a>
+              </article>
+              <article class="site-card">
+                <h4>LINE Design System</h4>
+                <p>看成熟产品如何统一颜色、组件和交互规则。产品不是一页好看，而是一整套稳定。</p>
+                <a href="https://designsystem.line.me/" target="_blank" rel="noreferrer">看设计系统</a>
+              </article>
+            </div>
+
+            <div class="mini-table" role="table" aria-label="审美检查问题">
+              <div class="mini-row head" role="row">
+                <div role="columnheader">检查点</div>
+                <div role="columnheader">要问自己</div>
+                <div role="columnheader">在作品里怎么改</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">第一眼</div>
+                <div role="cell">我 3 秒内知道这是干什么的吗？</div>
+                <div role="cell">标题更直接，主操作按钮更突出。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">层级</div>
+                <div role="cell">最重要的信息是不是最大、最靠前？</div>
+                <div role="cell">减少同样大小的文字，做主次对比。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">一致性</div>
+                <div role="cell">按钮、圆角、颜色是不是一套规则？</div>
+                <div role="cell">统一组件，别每块区域都换风格。</div>
+              </div>
+            </div>
+
+            <div class="discussion">
+              <b>课堂讨论</b>
+              <ul>
+                <li>打开两个案例网站，找出它们共同的 3 个设计习惯。</li>
+                <li>为什么“留白”不是浪费空间，而是在帮用户看清重点？</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-page" data-detail-page="iteration">
+          <header class="detail-top">
+            <div>
+              <h3>变量 5：迭代能力</h3>
+              <p data-no-auto-translate>
+                <span>学生看到的是一个已经能用的<a class="hero-inline-link" href="https://ai-project-inspiration-cards.vercel.app" target="_blank" rel="noreferrer">网站</a>，但老师背后不是一次生成成功。真正厉害的是：看见问题、提出修改、验证结果，然后继续下一轮。</span>
+                <span class="en-line" lang="en">Students see a working <a class="hero-inline-link" href="https://ai-project-inspiration-cards.vercel.app" target="_blank" rel="noreferrer">website</a>, but it was not made in one try. The real skill is noticing problems, requesting changes, checking results, and iterating again.</span>
+              </p>
+            </div>
+            <button class="btn" type="button" data-close-detail>收起</button>
+          </header>
+
+          <div class="detail-body">
+            <div class="metric-wall" aria-label="AI 灵感卡网站背后的迭代数字">
+              <article class="metric-card primary">
+                <span class="metric-kicker">AI 协作轮次</span>
+                <strong class="metric-number">213</strong>
+                <p>相关本地会话里，老师至少给过 213 条真实指令、修改要求和检查任务。</p>
+              </article>
+              <article class="metric-card">
+                <span class="metric-kicker">工作会话</span>
+                <strong class="metric-number">30</strong>
+                <p>不是“一次生成”，而是跨了 30 个项目会话持续推进。</p>
+              </article>
+              <article class="metric-card">
+                <span class="metric-kicker">Prompt 累计</span>
+                <strong class="metric-number">12.2万</strong>
+                <p>只统计用户真实输入，不含系统提示、工具输出和 AI 自己的长回答。</p>
+              </article>
+              <article class="metric-card">
+                <span class="metric-kicker">代码体量</span>
+                <strong class="metric-number">39.6万</strong>
+                <p>AI 灵感卡网站的 src/ 和 scripts/ 代码字符数，已经接近一本小书。</p>
+              </article>
+              <article class="metric-card">
+                <span class="metric-kicker">Git 提交</span>
+                <strong class="metric-number">71</strong>
+                <p>每次提交都像给项目拍一次存档照：做了什么，为什么改，都留痕。</p>
+              </article>
+            </div>
+
+            <p class="metric-footnote">统计口径：截至 2026-07-02，本地会话只算与 AI 灵感卡 / WAICY 项目路径相关的用户输入；代码只算 AI 灵感卡网站项目的 src/ 与 scripts/；Git 提交来自该网站项目本地仓库。</p>
+
+            <div class="iteration-map" aria-label="AI 灵感卡网站的迭代方向">
+              <article class="direction-card">
+                <span class="lane">方向 A</span>
+                <h4>内容库：先有稳定原料</h4>
+                <p>把灵感卡放进 cards.csv，处理字段、图片、标签、来源和去重。没有稳定数据，网站再漂亮也只是空壳。</p>
+              </article>
+              <article class="direction-card">
+                <span class="lane">方向 B</span>
+                <h4>网站体验：从列表到作品集</h4>
+                <p>把 CSV 转成 cards.json，让卡片能在网页里展示、筛选、浏览。用户看到的不是表格，而是一个能探索的灵感库。</p>
+              </article>
+              <article class="direction-card">
+                <span class="lane">方向 C</span>
+                <h4>双语能力：让内容走得更远</h4>
+                <p>补英文翻译、语言切换和测试，避免中文卡片上线了，英文版却漏掉或坏掉。</p>
+              </article>
+              <article class="direction-card">
+                <span class="lane">方向 D</span>
+                <h4>发布管线：减少重复劳动</h4>
+                <p>做 sync-cards.command 和 publish-cards.command，把同步、测试、构建、提交、部署变成可重复流程。</p>
+              </article>
+              <article class="direction-card">
+                <span class="lane">方向 E</span>
+                <h4>团队交付：不只给自己看</h4>
+                <p>导出 last-card-for-feishu.tsv，让最新卡片能被复制到团队协作工具里，变成别人也能使用的材料。</p>
+              </article>
+              <article class="direction-card">
+                <span class="lane">方向 F</span>
+                <h4>故障修复：把坑变成规则</h4>
+                <p>处理重复运行、路径混乱、权限报错、翻译漏提交。每一个 bug 都会反过来变成下一轮检查标准。</p>
+              </article>
+            </div>
+
+            <div class="mini-table" role="table" aria-label="迭代方法">
+              <div class="mini-row head" role="row">
+                <div role="columnheader">轮次</div>
+                <div role="columnheader">老师会问</div>
+                <div role="columnheader">下一句 prompt 可以怎么写</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">看结果</div>
+                <div role="cell">哪里最不像真实产品？</div>
+                <div role="cell">请把结果页补成真实产品状态：加载、失败、复制、保存。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">改重点</div>
+                <div role="cell">用户最先看到的重点对吗？</div>
+                <div role="cell">请重新调整第一屏层级，让主任务 3 秒内被看懂。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">再验证</div>
+                <div role="cell">改完有没有产生新问题？</div>
+                <div role="cell">请检查移动端、空输入、长文本和生成失败状态。</div>
+              </div>
+            </div>
+
+            <div class="discussion">
+              <b>课堂练习</b>
+              <ul>
+                <li>把自己的作品截图圈出 3 个“不像产品”的地方。</li>
+                <li>每个问题写一句下一轮 prompt：指出问题、说明目标、给出检查标准。</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-page" data-detail-page="safety">
+          <header class="detail-top">
+            <div>
+              <h3>变量 6：安全边界</h3>
+              <p>AI 作品可以好笑、夸张、锋利，但不能伤害真实的人。越像真实照片、真实声音、真实视频，越需要同意、标注和人类检查。</p>
+            </div>
+            <button class="btn" type="button" data-close-detail>收起</button>
+          </header>
+
+          <div class="detail-body">
+            <div class="detail-grid four">
+              <article class="case-card">
+                <h4>声音肖像权</h4>
+                <p>Scarlett Johansson 曾公开质疑 AI 语音与自己声音相似，引发“未经同意能不能模仿名人声音”的讨论。</p>
+                <a href="https://www.americanbar.org/advocacy/governmental_legislative_work/publications/washingtonletter/november-24-wl/openai-scarlett-johansson-1124wl/" target="_blank" rel="noreferrer">读案例</a>
+              </article>
+              <article class="case-card">
+                <h4>深伪图片伤害</h4>
+                <p>Taylor Swift 深伪图片事件让更多人意识到：AI 图像如果冒充真实人物，会造成严重伤害。</p>
+                <a href="https://www.washingtonpost.com/video/politics/white-house-alarmed-by-ai-deepfakes-of-taylor-swift/2024/01/26/b9e99774-5216-4050-a1a4-d71834d1fdea_video.html" target="_blank" rel="noreferrer">读新闻</a>
+              </article>
+              <article class="case-card">
+                <h4>深伪诈骗</h4>
+                <p>香港公司曾因 AI 深伪视频会议被骗约 2500 万美元。像真的，不等于是真的。</p>
+                <a href="https://incidentdatabase.ai/cite/634/" target="_blank" rel="noreferrer">读案例</a>
+              </article>
+              <article class="case-card">
+                <h4>假视频传播</h4>
+                <p>视频模型越来越逼真，新闻机构也提醒：水印和检测工具重要，但不能替代人的判断。</p>
+                <a href="https://time.com/7290050/veo-3-google-misinformation-deepfake/" target="_blank" rel="noreferrer">读报道</a>
+              </article>
+            </div>
+
+            <div class="mini-table" role="table" aria-label="安全检查清单">
+              <div class="mini-row head" role="row">
+                <div role="columnheader">检查项</div>
+                <div role="columnheader">要问</div>
+                <div role="columnheader">课堂作品怎么做</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">同意</div>
+                <div role="cell">有没有使用真实同学、老师、名人的脸或声音？</div>
+                <div role="cell">不用真实姓名和真实照片，改成虚构角色。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">伤害</div>
+                <div role="cell">这个笑点会不会攻击外貌、家庭、成绩、身体？</div>
+                <div role="cell">吐槽事件，不吐槽人；表达情绪，不羞辱别人。</div>
+              </div>
+              <div class="mini-row" role="row">
+                <div role="cell">标注</div>
+                <div role="cell">别人会不会把 AI 内容误认为真实？</div>
+                <div role="cell">在作品上标注“AI 生成漫画/虚构内容”。</div>
+              </div>
+            </div>
+
+            <div class="discussion">
+              <b>课堂辩题</b>
+              <ul>
+                <li>如果同学用 AI 做老师或同学的表情包，什么时候是玩笑，什么时候是伤害？</li>
+                <li>如果一个 AI 视频看起来很真实，转发的人需要承担责任吗？</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="question-board" aria-label="学生迭代记录画布">
+        <h3>下一步：迭代你的豆包原型</h3>
+        <p class="canvas-lead">模型先不换，先用今天讲的 5 个变量做一次升级。课堂上至少迭代 2 轮，每一轮都记录“修改前是什么样、我让 AI 改了什么、修改后变成什么样”，最后用这张画布练习 1 分钟演讲。</p>
+
+        <div class="action-grid" aria-label="五个下一步迭代动作">
+          <article class="action-card">
+            <span class="tag">Prompt</span>
+            <h4>把一句话变成任务单</h4>
+            <p>补上用户、输入、输出、限制和成功标准。</p>
+          </article>
+          <article class="action-card">
+            <span class="tag">产品细化</span>
+            <h4>补一个真实流程</h4>
+            <p>至少加上开始、生成中、结果、失败提示中的 2 个状态。</p>
+          </article>
+          <article class="action-card">
+            <span class="tag">审美判断</span>
+            <h4>圈出 1 个视觉问题</h4>
+            <p>改标题、按钮、颜色、间距或第一屏重点。</p>
+          </article>
+          <article class="action-card">
+            <span class="tag">迭代能力</span>
+            <h4>至少迭代 2 轮</h4>
+            <p>每轮都留下前后对比：修改前、修改后、哪里更像产品了。</p>
+          </article>
+          <article class="action-card">
+            <span class="tag">安全边界</span>
+            <h4>加一条人类检查</h4>
+            <p>提醒不要攻击真实的人，不泄露隐私。</p>
+          </article>
+        </div>
+
+        <div class="canvas-sheet" aria-label="迭代记录和演讲画布">
+          <article class="record-panel">
+            <h4>迭代记录画布</h4>
+            <div class="record-grid">
+              <div class="record-row">
+                <div class="record-cell">
+                  <b>第 1 轮：我想解决的问题</b>
+                  <span>原型哪里最不像产品？</span>
+                  <span class="blank-line"></span>
+                </div>
+                <div class="record-cell">
+                  <b>我给 AI 的修改指令</b>
+                  <span>写下最关键的一句 prompt。</span>
+                  <span class="blank-line"></span>
+                </div>
+                <div class="record-cell">
+                  <b>前后对比证据</b>
+                  <span>修改前后哪里不一样？圈出 1 个变化。</span>
+                  <span class="blank-line"></span>
+                </div>
+              </div>
+              <div class="record-row">
+                <div class="record-cell">
+                  <b>第 2 轮：我继续发现的问题</b>
+                  <span>从审美、流程或安全里选一个。</span>
+                  <span class="blank-line"></span>
+                </div>
+                <div class="record-cell">
+                  <b>我给 AI 的修改指令</b>
+                  <span>这次要更具体、更可检查。</span>
+                  <span class="blank-line"></span>
+                </div>
+                <div class="record-cell">
+                  <b>前后对比证据</b>
+                  <span>截图或口头记录：哪里更像产品了？</span>
+                  <span class="blank-line"></span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="speech-panel">
+            <h4>1 分钟演讲提纲</h4>
+            <ol class="speech-list">
+              <li>我的原型原来是做什么的。</li>
+              <li>我发现它最大的问题是：____。</li>
+              <li>我让 AI 做了第 1 次修改：____。</li>
+              <li>我让 AI 做了第 2 次修改：____。</li>
+              <li>现在它比原来更像产品，因为：____。</li>
+              <li>下一步我还想继续优化：____。</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="code-compare" id="codeCompare" aria-label="代码结构对比页">
+      <header class="code-hero">
+        <div>
+          <h2>网页背后的代码，也不一样</h2>
+          <p class="code-hero-copy" data-no-auto-translate data-no-glossary>
+            <span>同样是“输入吐槽 -> 生成漫画 -> 展示结果”，背后的代码可以很简单，也可以更像一个完整产品。</span>
+            <span class="code-term-row" aria-label="代码三层结构">
+              <button class="marker-word" data-glossary="html" type="button" aria-expanded="false" aria-controls="glossaryFloat">HTML</button>
+              <button class="marker-word" data-glossary="css" type="button" aria-expanded="false" aria-controls="glossaryFloat">CSS</button>
+              <button class="marker-word" data-glossary="javascript" type="button" aria-expanded="false" aria-controls="glossaryFloat">JavaScript</button>
+            </span>
+            <span>我们只看几个关键片段，不背代码。</span>
+            <span class="en-line" lang="en">The same flow: input complaint -> generate comic -> show result. Behind it, the code can be simple or product-like.</span>
+            <span class="code-term-row en-line" lang="en" aria-label="Three layers of code">
+              <button class="marker-word" data-glossary="html" type="button" aria-expanded="false" aria-controls="glossaryFloat">HTML</button>
+              <button class="marker-word" data-glossary="css" type="button" aria-expanded="false" aria-controls="glossaryFloat">CSS</button>
+              <button class="marker-word" data-glossary="javascript" type="button" aria-expanded="false" aria-controls="glossaryFloat">JavaScript</button>
+            </span>
+            <span class="en-line" lang="en">We will only inspect key snippets, not memorize code.</span>
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn" id="backAnalysisBtn" type="button">回到差异拆解</button>
+          <a class="link-btn" href="../student-original/website.html" target="_blank" rel="noreferrer">打开 A 源网页</a>
+          <a class="link-btn" href="teacher-version.html" target="_blank" rel="noreferrer">打开 B 源网页</a>
+        </div>
+      </header>
+
+      <section class="code-map" aria-label="代码三层地图">
+        <h3>先看代码的 3 层结构</h3>
+        <div class="code-lenses">
+          <article class="code-lens">
+            <b>HTML：页面骨架</b>
+            <p>决定有哪些屏幕、输入框、按钮、画布和结果区。它像产品的房间布局。</p>
+          </article>
+          <article class="code-lens">
+            <b>CSS：视觉和排版</b>
+            <p>决定颜色、间距、动画、响应式和按钮状态。它让网页不像一张默认表格。</p>
+          </article>
+          <article class="code-lens">
+            <b>JavaScript：行为逻辑</b>
+            <p>决定点击后发生什么、如何调用 AI、失败怎么办、怎么保存和复制。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="code-map" aria-label="代码体量和功能差异">
+        <h3>再看一眼体量和复杂度</h3>
+        <div class="code-stats">
+          <article class="stat-card">
+            <b>A：学生版</b>
+            <span class="stat-number">402</span>
+            <p>约 402 行，1.5 万字符。结构清楚，适合快速做出第一版 demo。</p>
+          </article>
+          <article class="stat-card">
+            <b>B：老师版</b>
+            <span class="stat-number">1727</span>
+            <p>约 1727 行，4.9 万字符。多出来的不是炫技，而是状态、校验、兜底和产品细节。</p>
+          </article>
+          <article class="stat-card">
+            <b>课堂结论</b>
+            <span class="stat-number">3 层</span>
+            <p>好原型通常不是只改一个按钮，而是 HTML、CSS、JS 一起升级。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="code-case" aria-label="代码片段对比一">
+        <h3>对比 1：页面结构怎么写</h3>
+        <div class="code-compare-grid">
+          <article class="code-column">
+            <h4>A 学生版：三个 div 页面</h4>
+            <pre>&lt;div id="page1" class="page active"&gt;
+  输入框 + 发射按钮
+&lt;/div&gt;
+
+&lt;div id="loadingPage" class="page"&gt;
+  AI 正在绘制漫画手稿
+&lt;/div&gt;
+
+&lt;div id="page2" class="page"&gt;
+  canvas + 保存 + 再来一张
+&lt;/div&gt;</pre>
+          </article>
+          <article class="code-column teacher">
+            <h4>B 老师版：按产品状态命名</h4>
+            <pre>&lt;section class="screen input-screen active" id="inputScreen"&gt;
+  输入工作台 + 样例 + 语气 + 安全检查
+&lt;/section&gt;
+
+&lt;section class="screen loading-screen" id="loadingScreen"&gt;
+  可爱的等待动画
+&lt;/section&gt;
+
+&lt;section class="screen result-screen" id="resultScreen"&gt;
+  漫画 + 标题 + 台词 + 复制保存
+&lt;/section&gt;</pre>
+          </article>
+        </div>
+        <div class="code-takeaway">差异：A 已经有页面切换；B 把每个页面状态命名得更清楚，还把“语气选择、安全检查、结果文案”提前设计进结构里。</div>
+      </section>
+
+      <section class="code-case" aria-label="代码片段对比二">
+        <h3>对比 2：样式是“快速套类名”，还是“设计系统”</h3>
+        <div class="code-compare-grid">
+          <article class="code-column">
+            <h4>A 学生版：Tailwind 类名直接写在元素上</h4>
+            <pre>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+
+&lt;textarea
+  class="w-full h-32 p-4 border-2
+         rounded-xl text-lg bg-gray-50"&gt;
+&lt;/textarea&gt;</pre>
+          </article>
+          <article class="code-column teacher">
+            <h4>B 老师版：先定义视觉规则，再复用组件</h4>
+            <pre>:root {
+  --ink: #171512;
+  --red: #ff6048;
+  --yellow: #f7c948;
+}
+
+.input-screen .form-body {
+  grid-template-columns: 1fr 0.86fr;
+}
+
+.tone.active {
+  background: #dbfff8;
+  box-shadow: 4px 4px 0 var(--teal);
+}</pre>
+          </article>
+        </div>
+        <div class="code-takeaway">差异：A 适合快速搭建；B 更像“有规则的产品界面”，颜色、按钮、选中态和响应式布局都能统一调整。</div>
+      </section>
+
+      <section class="code-case" aria-label="代码片段对比三">
+        <h3>对比 3：点击生成后，JavaScript 做了什么</h3>
+        <div class="code-compare-grid">
+          <article class="code-column">
+            <h4>A 学生版：生成 -> 随机回复 -> 画到 canvas</h4>
+            <pre>launchBtn.addEventListener('click', async () =&gt; {
+  const text = complaintInput.value.trim();
+  if (!text) {
+    alert('先输入你想吐槽的话吧～');
+    return;
+  }
+
+  showPage(loadingPage);
+  const { imageUrl, filteredText } =
+    await generateComicBase(text);
+
+  const reply = replies[Math.floor(Math.random() * replies.length)];
+  await renderComic(imageUrl, filteredText, reply);
+  showPage(page2);
+});</pre>
+          </article>
+          <article class="code-column teacher">
+            <h4>B 老师版：校验 -> 等待页 -> AI -> 兜底 -> 结果页</h4>
+            <pre>async function generate() {
+  const text = input.value.trim();
+  const allChecked = checks.every((box) =&gt; box.checked);
+  if (!text) {
+    errorMsg.textContent = "先写一句想吐槽的话，再发射。";
+    input.focus();
+    return;
+  }
+  if (!allChecked) {
+    errorMsg.textContent = "发布前检查还没有全部通过。";
+    return;
+  }
+
+  showScreen(loadingScreen);
+  generateBtn.disabled = true;
+  try {
+    const result = await requestAiComic(text);
+    refreshResult(result);
+    showScreen(resultScreen);
+  } catch (error) {
+    const fallback = createResult(text);
+    refreshResult(fallback);
+    showScreen(resultScreen);
+  } finally {
+    generateBtn.disabled = !checks.every((item) =&gt; item.checked);
+  }
+}</pre>
+          </article>
+        </div>
+        <div class="code-takeaway">差异：A 的逻辑像“按钮触发一个任务”；B 的逻辑像“产品流程”，会检查输入、安全、加载、失败兜底和结果刷新。</div>
+      </section>
+
+      <section class="code-case" aria-label="代码片段对比四">
+        <h3>对比 4：AI 生成提示词和安全边界</h3>
+        <div class="code-compare-grid">
+          <article class="code-column">
+            <h4>A 学生版：一个固定画面 prompt</h4>
+            <pre>const prompt = encodeURIComponent(
+  `Doraemon manga style,
+   black and white line art,
+   single comic panel,
+   no text, no words`
+);
+
+const negativeWords = [
+  '去死', '讨厌', '恨', '垃圾'
+];</pre>
+          </article>
+          <article class="code-column teacher">
+            <h4>B 老师版：把场景、留白、限制都写进 prompt</h4>
+            <pre>return [
+  "Create a polished two-panel comic illustration.",
+  `Scenario inspiration: "${result.raw}".`,
+  "Panel 1 shows the raw frustrated feeling.",
+  "Panel 2 transforms it into a kind comic moment.",
+  "Must contain one large blank speech bubble.",
+  "No violence, no bullying, no real person likeness."
+].join(" ");</pre>
+          </article>
+        </div>
+        <div class="code-takeaway">差异：A 能生成图；B 会告诉 AI 画面结构、文字留白、安全边界和课堂展示标准，所以结果更稳定。</div>
+      </section>
+    </section>
+  </main>
+
+  <div class="glossary-backdrop" id="glossaryBackdrop" hidden></div>
+  <aside class="glossary-popover glossary-float" id="glossaryFloat" aria-live="polite" hidden></aside>
+
+  <script>
+    const revealBtn = document.getElementById("revealBtn");
+    const backBtn = document.getElementById("backBtn");
+    const codeCompareBtn = document.getElementById("codeCompareBtn");
+    const backAnalysisBtn = document.getElementById("backAnalysisBtn");
+    const analysis = document.getElementById("analysis");
+    const codeCompare = document.getElementById("codeCompare");
+    const observe = document.getElementById("observe");
+    const detailStage = document.getElementById("detailStage");
+    const factorButtons = Array.from(document.querySelectorAll("[data-detail]"));
+    const detailPages = Array.from(document.querySelectorAll("[data-detail-page]"));
+    const closeDetailButtons = Array.from(document.querySelectorAll("[data-close-detail]"));
+    const glossaryBackdrop = document.getElementById("glossaryBackdrop");
+    const glossaryFloat = document.getElementById("glossaryFloat");
+    const glossaryPattern = /HTML\/CSS\/JS|subscription fees|design system|sync-cards\.command|publish-cards\.command|last-card-for-feishu\.tsv|cards\.json|cards\.csv|JavaScript|Tailwind|prototype|prompt|iterate|quota|token|API|Git|CSV|JSON|TSV|src\/|scripts\/|demo|debug(?:ging)?|bug|responsive(?:ness)?|component(?:s)?|pipeline|deepfake|watermark|privacy|deploy(?:ing|ment)?|build(?:ing)?|HTML|CSS|JS|调试|响应式|组件|设计系统|管线|深伪|水印|隐私|部署|构建/gi;
+    const glossaryHighlightLimits = new Map([
+      ["prompt", 8],
+      ["prototype", 6],
+      ["demo", 3],
+      ["token", 6],
+      ["api", 5],
+      ["iterate", 5],
+      ["html", 5],
+      ["css", 5],
+      ["javascript", 5],
+      ["git", 4],
+      ["csv", 4],
+      ["json", 4],
+      ["deepfake", 4],
+      ["privacy", 3]
+    ]);
+    const bilingualTranslations = new Map([
+      ["先看作品，不给答案", "Observe first. No answers yet."],
+      ["请先只观察左右两边的网页原型。每组找出 5 个不同点，先不要急着判断哪一个更好。", "First, only observe the two web prototypes. Each group finds 5 differences before deciding which one is better."],
+      ["单独打开 A", "Open A"],
+      ["单独打开 B", "Open B"],
+      ["进入差异拆解", "Start the breakdown"],
+      ["A：第二节课原型", "A: Lesson 2 prototype"],
+      ["B：升级后的同题原型", "B: Upgraded same-idea prototype"],
+      ["先拆差异，再问为什么", "Break down the differences, then ask why."],
+      ["同一个“吐槽变漫画”的想法，A 已经能跑起来，B 更像一个可以展示和使用的产品。先看它们到底差在哪里。", "Same idea: turn a complaint into a comic. A works. B feels more like a usable product. Let's first see the exact differences."],
+      ["一键看代码对比", "View code comparison"],
+      ["回到观察页", "Back to observation"],
+      ["A 的价值", "Value of A"],
+      ["从想法到网页", "From idea to webpage"],
+      ["A 能用了。", "A works."],
+      ["已经可以输入、点击，并看到生成结果，速度很快。", "You can already type, click, and see a generated result, so the speed is strong."],
+      ["但它还只是“能用”：用户是谁、在哪个场景使用、怎样算成功，还不够清楚。", "But it is only usable: who the user is, where they use it, and what counts as success are still unclear."],
+      ["流程还不完整：缺少语气选择、生成状态和检查流程。", "The flow is still incomplete: it lacks tone choices, loading states, and a review flow."],
+      ["视觉风格依赖默认模板和随机素材，产品记忆点不够稳定。", "The visual style still relies on default templates and random assets, so the product memory is weak."],
+      ["B 的升级", "Upgrade in B"],
+      ["从网页到产品原型", "From webpage to product prototype"],
+      ["保留同一个想法，但把它做成了一个完整的吐槽漫画生成器。", "It keeps the same idea, but turns it into a complete complaint-to-comic generator."],
+      ["输入更具体：有样例、有字数限制、有明确的生成目标。", "Input is more specific: examples, word limit, and a clear generation goal."],
+      ["输出更完整：漫画、标题、台词、友善回复和标签一起出现。", "Output is more complete: comic, title, dialogue, kind reply, and tags appear together."],
+      ["流程更像产品：选择语气、生成状态、结果区、复制、保存。", "The flow feels product-like: choose tone, show loading state, result area, copy, and save."],
+      ["检查更可信：生成前先确认友善、安全、适合展示。", "The checks are more trustworthy: kindness, safety, and classroom suitability are confirmed first."],
+      ["真正让结果变好的 6 个变量", "6 variables that actually improve the result"],
+      ["点击任意变量，展开一张可以直接上课讲的小页面。", "Click any variable to open a mini teaching page."],
+      ["模型智能程度", "Model capability"],
+      ["更强的模型更懂代码、布局、状态和交互细节。", "Stronger models understand code, layout, states, and interaction details better."],
+      ["Prompt 质量", "Prompt quality"],
+      ["不是一句“做高级点”，而是说清用户、输入、输出和限制。", "Not just 'make it better', but clear user, input, output, and constraints."],
+      ["产品细化程度", "Product detail"],
+      ["产品细化", "Product detail"],
+      ["从 idea 变成问题、场景、流程、按钮和结果标准。", "Turn an idea into a problem, context, flow, buttons, and success criteria."],
+      ["审美判断", "Design judgment"],
+      ["颜色、字体、间距、层级和视觉记忆点都需要被指挥。", "Color, type, spacing, hierarchy, and visual memory all need direction."],
+      ["迭代能力", "Iteration ability"],
+      ["看结果，指出哪里不像产品，再让 AI 修改。", "Look at the result, identify what feels unlike a product, then ask AI to revise."],
+      ["安全边界", "Safety boundaries"],
+      ["吐槽可以好笑，但不能伤人，所以要有人类检查。", "Complaints can be funny, but they cannot hurt people, so human review matters."],
+      ["变量 1：模型智能程度", "Variable 1: Model capability"],
+      ["收起", "Collapse"],
+      ["不是选最强，而是选对类型", "Do not pick the strongest. Pick the right type."],
+      ["先问任务是什么，再选模型。写、改、画、拍，背后其实是四种不同能力。", "Ask what the task is first, then choose the model. Writing, editing, drawing, and filming are different abilities."],
+      ["国际模型", "Global models"],
+      ["国产/国内常用模型", "Chinese / commonly used local models"],
+      ["文", "Text"],
+      ["文本 / 推理", "Text / reasoning"],
+      ["写方案、拆问题、总结资料、设计产品逻辑。", "Write plans, break down problems, summarize material, and design product logic."],
+      ["代码 / 网页", "Code / web"],
+      ["读文件、改 HTML/CSS/JS、调试报错、跑测试。", "Read files, edit HTML/CSS/JS, debug errors, and run tests."],
+      ["图", "Image"],
+      ["图像生成", "Image generation"],
+      ["生成角色、漫画底图、封面、产品视觉素材。", "Generate characters, comic backgrounds, covers, and product visuals."],
+      ["视频生成", "Video generation"],
+      ["生成短片、广告分镜、动态演示和声音画面。", "Generate short videos, ad storyboards, demos, and audio-visual scenes."],
+      ["先说任务", "Define the task"],
+      ["我要写文字、改网页、生成图，还是做视频？", "Am I writing text, editing a webpage, generating images, or making video?"],
+      ["再看质量", "Check the quality level"],
+      ["是课堂草稿，还是要拿出去展示的作品？", "Is this a classroom draft or a showcase-ready work?"],
+      ["然后看成本", "Check the cost"],
+      ["免费额度、订阅费、API 计费方式都不一样。", "Free quota, subscription fees, and API pricing are all different."],
+      ["token 是什么？", "What is a token?"],
+      ["Token 是模型处理文本的基本计量单位。它不等于一个完整的汉字或英文单词，而是模型把输入和输出拆分后的文字片段。", "Tokens are the basic units a model uses to process text. They are not the same as one Chinese character or one English word; they are text pieces created when the model splits input and output."],
+      ["输入和输出都会计算 token。", "Both input and output count as tokens."],
+      ["问题越长、回答越长、代码越多，token 消耗越高。", "Longer questions, longer answers, and more code use more tokens."],
+      ["很多 API 按每 100 万 token 计费，所以 token 会影响成本。", "Many APIs charge per 1 million tokens, so tokens affect cost."],
+      ["课堂记法：token 是衡量 AI 读写了多少文字的单位。", "Classroom note: a token is a unit for measuring how much text the AI reads and writes."],
+      ["最后看结果", "Review the result"],
+      ["生成后要人类检查，再决定是否继续迭代。", "After generation, a human checks it before deciding whether to iterate."],
+      ["课堂讨论", "Class discussion"],
+      ["为什么“同样是 AI”，写作文厉害的模型不一定最会改网页？", "Why might a model that writes essays well not be the best at editing webpages?"],
+      ["如果预算有限，你会把钱花在更强模型、更多迭代，还是更好的素材上？", "With a limited budget, would you spend on a stronger model, more iteration, or better assets?"],
+      ["OpenAI 模型", "OpenAI models"],
+      ["OpenAI 价格", "OpenAI pricing"],
+      ["Claude 模型", "Claude models"],
+      ["Claude 价格", "Claude pricing"],
+      ["Gemini 模型", "Gemini models"],
+      ["Gemini 价格", "Gemini pricing"],
+      ["Runway 价格", "Runway pricing"],
+      ["Midjourney 订阅", "Midjourney plans"],
+      ["变量 2：Prompt 质量", "Variable 2: Prompt quality"],
+      ["好 prompt 不是“说得高级”，而是把任务变清楚：谁用、为什么用、输入什么、输出什么、不能做什么、做到什么才算好。", "A good prompt is not fancy wording. It makes the task clear: who uses it, why, input, output, limits, and what counts as good."],
+      ["一个好 prompt 的 7 块积木", "7 building blocks of a good prompt"],
+      ["角色、目标、背景、输入、输出格式、限制、安全边界。越像产品说明书，AI 越容易稳定发挥。", "Role, goal, context, input, output format, constraints, and safety boundaries. The more it feels like a product brief, the more stable the AI becomes."],
+      ["给格式，比给形容词更重要", "Format matters more than adjectives"],
+      ["不要只说“高级一点”。要说页面包含哪些区块、按钮怎么叫、生成结果有哪些字段、失败时显示什么。", "Do not only say 'make it premium'. Say what sections the page needs, button names, output fields, and failure messages."],
+      ["给例子，能快速校准风格", "Examples calibrate style quickly"],
+      ["给一个“输入样例”和“理想输出样例”，模型会更容易明白你想要的是搞笑、友善，还是认真。", "Give one input example and one ideal output example, so the model knows whether you want funny, kind, or serious."],
+      ["不够好的 prompt", "Weak prompt"],
+      ["更好的 prompt", "Better prompt"],
+      ["部分", "Part"],
+      ["写什么", "What to write"],
+      ["例子", "Example"],
+      ["目标", "Goal"],
+      ["你希望 AI 完成什么", "What you want AI to do"],
+      ["把一句吐槽改写成漫画产品原型。", "Turn one complaint into a comic product prototype."],
+      ["约束", "Constraints"],
+      ["哪些事情不能做", "What must not happen"],
+      ["不能伤人、不能泄露隐私、不能做登录付款。", "No harm, no privacy leaks, no login or payment flows."],
+      ["标准", "Standard"],
+      ["怎样才算好", "What good looks like"],
+      ["投影清楚、能复制结果、生成失败也有提示。", "Readable on a projector, result can be copied, and failures show a message."],
+      ["课堂练习", "Class exercise"],
+      ["把“帮我做个网站”改写成一个包含目标、用户、输入、输出、限制的 prompt。", "Rewrite 'make me a website' into a prompt with goal, user, input, output, and constraints."],
+      ["让同桌找出你 prompt 里最模糊的一句话，把它改成可检查的标准。", "Ask your partner to find the vaguest sentence in your prompt and turn it into a checkable standard."],
+      ["OpenAI 最佳实践", "OpenAI best practices"],
+      ["Claude Prompt 最佳实践", "Claude prompt best practices"],
+      ["Gemini Prompt 策略", "Gemini prompting strategies"],
+      ["变量 3：产品细化程度", "Variable 3: Product detail"],
+      ["粗糙想法", "Rough idea"],
+      ["细化后", "After detailing"],
+      ["AI 会更清楚什么", "What AI understands better"],
+      ["做一个吐槽网站", "Make a complaint website"],
+      ["给小学生，把一句烦恼改写成友善漫画。", "For primary students: rewrite one worry into a kind comic."],
+      ["用户是谁，为什么需要这个产品。", "Who the user is and why they need it."],
+      ["生成图片", "Generate an image"],
+      ["输出漫画图、标题、台词、友善回复、保存按钮。", "Output comic image, title, dialogue, kind reply, and save button."],
+      ["结果不只是“有图”，而是能展示、能分享。", "The result is not just an image. It can be shown and shared."],
+      ["好看一点", "Make it look better"],
+      ["投影可读、手机可用、按钮清楚、有生成状态。", "Readable on projector, usable on mobile, clear buttons, and loading state."],
+      ["设计标准变成能检查的要求。", "Design standards become checkable requirements."],
+      ["最小产品说明书", "Minimum product brief"],
+      ["谁在什么场景遇到什么问题，输入什么，AI 做什么，输出什么，人怎么检查，失败怎么办。把这 7 句写清楚，原型会立刻像产品。", "Who has what problem in what context, what they input, what AI does, what comes out, how humans check it, and what happens on failure. Write these 7 points and the prototype becomes product-like."],
+      ["细化不是加功能", "Detailing is not adding features"],
+      ["细化是让每个功能更有理由。比如“保存图片”不是因为酷，而是因为学生要把漫画带走、发给家长或放进作品集。", "Detailing means giving every feature a reason. Saving an image is not cool for its own sake; students need to take it away, share it, or add it to a portfolio."],
+      ["未细化", "Not detailed"],
+      ["选一个自己的项目，用 7 句话写出最小产品说明书。", "Choose one of your projects and write a 7-sentence minimum product brief."],
+      ["删掉一个“只是看起来酷”的功能，换成一个用户真的会用的功能。", "Remove one feature that only looks cool and replace it with one the user would really use."],
+      ["变量 4：审美判断", "Variable 4: Design judgment"],
+      ["AI 可以生成页面，但它不会自动知道“什么样的页面值得停留”。审美判断就是你能看出：哪里乱、哪里空、哪里没有层级、哪里不像一个真正的产品。", "AI can generate pages, but it does not automatically know what makes a page worth staying on. Design judgment means seeing what is messy, empty, flat, or unlike a real product."],
+      ["看世界级网页如何做第一屏、字体、动效和视觉记忆点。适合让学生总结“好网站的共同点”。", "See how world-class sites handle first screens, typography, motion, and visual memory. Good for summarizing what strong websites share."],
+      ["打开案例库", "Open gallery"],
+      ["复杂产品也可以讲得清楚：层级、图标、留白、卡片密度都服务于理解。", "Complex products can still be clear: hierarchy, icons, whitespace, and card density all support understanding."],
+      ["看 Checkout", "View Checkout"],
+      ["大图、少字、清晰节奏，让人第一眼知道产品是什么，第二眼才慢慢看细节。", "Large visuals, few words, and clear rhythm help people know the product first, then explore details."],
+      ["看产品页", "View product page"],
+      ["非常克制的颜色和排版，适合观察“专业工具为什么不需要很花”。", "Very restrained color and layout. Good for seeing why professional tools do not need to be flashy."],
+      ["看官网", "View website"],
+      ["把复杂概念变成容易理解的模块，适合看信息组织和视觉节奏。", "Turns complex concepts into understandable modules. Good for studying information structure and rhythm."],
+      ["看成熟产品如何统一颜色、组件和交互规则。产品不是一页好看，而是一整套稳定。", "See how mature products unify color, components, and interaction rules. A product is not one pretty page, but a stable system."],
+      ["看设计系统", "View design system"],
+      ["检查点", "Check point"],
+      ["要问自己", "Ask yourself"],
+      ["在作品里怎么改", "How to improve the work"],
+      ["第一眼", "First glance"],
+      ["我 3 秒内知道这是干什么的吗？", "Do I know what this does in 3 seconds?"],
+      ["标题更直接，主操作按钮更突出。", "Make the title more direct and the primary action more visible."],
+      ["层级", "Hierarchy"],
+      ["最重要的信息是不是最大、最靠前？", "Is the most important information largest and first?"],
+      ["减少同样大小的文字，做主次对比。", "Reduce same-size text and create stronger priority."],
+      ["一致性", "Consistency"],
+      ["按钮、圆角、颜色是不是一套规则？", "Do buttons, radius, and colors follow one system?"],
+      ["统一组件，别每块区域都换风格。", "Unify components. Do not change style in every section."],
+      ["打开两个案例网站，找出它们共同的 3 个设计习惯。", "Open two example sites and find 3 design habits they share."],
+      ["为什么“留白”不是浪费空间，而是在帮用户看清重点？", "Why is whitespace not wasted space, but a way to help users see the focus?"],
+      ["变量 5：迭代能力", "Variable 5: Iteration ability"],
+      ["学生看到的是一个已经能用的网站，但老师背后不是一次生成成功。真正厉害的是：看见问题、提出修改、验证结果，然后继续下一轮。", "Students see a working website, but it was not made in one try. The real skill is noticing problems, requesting changes, checking results, and iterating again."],
+      ["AI 协作轮次", "AI collaboration turns"],
+      ["相关本地会话里，老师至少给过 213 条真实指令、修改要求和检查任务。", "Across related local sessions, the teacher gave at least 213 real instructions, revision requests, and checking tasks."],
+      ["工作会话", "Work sessions"],
+      ["不是“一次生成”，而是跨了 30 个项目会话持续推进。", "Not one generation, but continued progress across 30 project sessions."],
+      ["Prompt 累计", "Prompt total"],
+      ["12.2万", "122K"],
+      ["只统计用户真实输入，不含系统提示、工具输出和 AI 自己的长回答。", "Only real user input is counted, not system prompts, tool output, or AI responses."],
+      ["代码体量", "Code volume"],
+      ["39.6万", "396K"],
+      ["AI 灵感卡网站的 src/ 和 scripts/ 代码字符数，已经接近一本小书。", "Character count in the AI Inspiration Cards site's src/ and scripts/ folders, almost like a small book."],
+      ["Git 提交", "Git commits"],
+      ["每次提交都像给项目拍一次存档照：做了什么，为什么改，都留痕。", "Each commit is like a snapshot of the project: what changed and why."],
+      ["统计口径：截至 2026-07-02，本地会话只算与 AI 灵感卡 / WAICY 项目路径相关的用户输入；代码只算 AI 灵感卡网站项目的 src/ 与 scripts/；Git 提交来自该网站项目本地仓库。", "Method: as of 2026-07-02, local sessions only count user input related to AI Inspiration Cards / WAICY paths; code only counts src/ and scripts/ in the site project; Git commits come from the local repository."],
+      ["方向 A", "Direction A"],
+      ["内容库：先有稳定原料", "Content library: stable source first"],
+      ["把灵感卡放进 cards.csv，处理字段、图片、标签、来源和去重。没有稳定数据，网站再漂亮也只是空壳。", "Put inspiration cards into cards.csv, then handle fields, images, tags, sources, and duplicates. Without stable data, a pretty site is just an empty shell."],
+      ["方向 B", "Direction B"],
+      ["网站体验：从列表到作品集", "Website experience: list to portfolio"],
+      ["把 CSV 转成 cards.json，让卡片能在网页里展示、筛选、浏览。用户看到的不是表格，而是一个能探索的灵感库。", "Convert CSV to cards.json so cards can be displayed, filtered, and browsed. Users see an explorable inspiration library, not a spreadsheet."],
+      ["方向 C", "Direction C"],
+      ["双语能力：让内容走得更远", "Bilingual ability: help content travel further"],
+      ["补英文翻译、语言切换和测试，避免中文卡片上线了，英文版却漏掉或坏掉。", "Add English translation, language switching, and tests so the English version is not missing or broken."],
+      ["方向 D", "Direction D"],
+      ["发布管线：减少重复劳动", "Publishing pipeline: reduce repeated work"],
+      ["做 sync-cards.command 和 publish-cards.command，把同步、测试、构建、提交、部署变成可重复流程。", "Build sync-cards.command and publish-cards.command so syncing, testing, building, committing, and deploying become repeatable."],
+      ["方向 E", "Direction E"],
+      ["团队交付：不只给自己看", "Team handoff: not just for myself"],
+      ["导出 last-card-for-feishu.tsv，让最新卡片能被复制到团队协作工具里，变成别人也能使用的材料。", "Export last-card-for-feishu.tsv so the newest card can be copied into team tools and used by others."],
+      ["方向 F", "Direction F"],
+      ["故障修复：把坑变成规则", "Bug fixing: turn problems into rules"],
+      ["处理重复运行、路径混乱、权限报错、翻译漏提交。每一个 bug 都会反过来变成下一轮检查标准。", "Handle duplicate runs, messy paths, permission errors, and missing translation commits. Every bug becomes a future checking rule."],
+      ["轮次", "Round"],
+      ["老师会问", "Teacher asks"],
+      ["下一句 prompt 可以怎么写", "Next prompt could be"],
+      ["看结果", "Review the result"],
+      ["哪里最不像真实产品？", "What feels least like a real product?"],
+      ["请把结果页补成真实产品状态：加载、失败、复制、保存。", "Please add real product states to the result page: loading, failure, copy, and save."],
+      ["改重点", "Adjust the focus"],
+      ["用户最先看到的重点对吗？", "Is the first thing users see the right focus?"],
+      ["请重新调整第一屏层级，让主任务 3 秒内被看懂。", "Please restructure the first screen so the main task is clear within 3 seconds."],
+      ["再验证", "Verify again"],
+      ["改完有没有产生新问题？", "Did the change create new problems?"],
+      ["请检查移动端、空输入、长文本和生成失败状态。", "Please check mobile, empty input, long text, and generation failure states."],
+      ["把自己的作品截图圈出 3 个“不像产品”的地方。", "Circle 3 places in your screenshot that feel unlike a product."],
+      ["每个问题写一句下一轮 prompt：指出问题、说明目标、给出检查标准。", "For each problem, write the next prompt: name the issue, state the goal, and give a checkable standard."],
+      ["变量 6：安全边界", "Variable 6: Safety boundaries"],
+      ["AI 作品可以好笑、夸张、锋利，但不能伤害真实的人。越像真实照片、真实声音、真实视频，越需要同意、标注和人类检查。", "AI work can be funny, exaggerated, and sharp, but it cannot harm real people. The more realistic the face, voice, or video, the more consent, labeling, and human review are needed."],
+      ["声音肖像权", "Voice likeness rights"],
+      ["Scarlett Johansson 曾公开质疑 AI 语音与自己声音相似，引发“未经同意能不能模仿名人声音”的讨论。", "Scarlett Johansson publicly questioned an AI voice that sounded similar to hers, raising debate about imitating celebrity voices without consent."],
+      ["读案例", "Read case"],
+      ["深伪图片伤害", "Deepfake image harm"],
+      ["Taylor Swift 深伪图片事件让更多人意识到：AI 图像如果冒充真实人物，会造成严重伤害。", "The Taylor Swift deepfake image incident showed how AI images impersonating real people can cause serious harm."],
+      ["读新闻", "Read news"],
+      ["深伪诈骗", "Deepfake fraud"],
+      ["香港公司曾因 AI 深伪视频会议被骗约 2500 万美元。像真的，不等于是真的。", "A Hong Kong company was reportedly defrauded of about $25 million through an AI deepfake video meeting. Looking real does not mean being real."],
+      ["假视频传播", "Fake video spread"],
+      ["视频模型越来越逼真，新闻机构也提醒：水印和检测工具重要，但不能替代人的判断。", "Video models are becoming more realistic. News organizations warn that watermarks and detection tools matter, but cannot replace human judgment."],
+      ["读报道", "Read report"],
+      ["检查项", "Check item"],
+      ["要问", "Ask"],
+      ["课堂作品怎么做", "What to do in class work"],
+      ["同意", "Consent"],
+      ["有没有使用真实同学、老师、名人的脸或声音？", "Does it use the face or voice of a real classmate, teacher, or celebrity?"],
+      ["不用真实姓名和真实照片，改成虚构角色。", "Do not use real names or photos. Use fictional characters."],
+      ["伤害", "Harm"],
+      ["这个笑点会不会攻击外貌、家庭、成绩、身体？", "Does this joke attack appearance, family, grades, or body?"],
+      ["吐槽事件，不吐槽人；表达情绪，不羞辱别人。", "Complain about the situation, not the person. Express emotion without humiliating others."],
+      ["标注", "Labeling"],
+      ["别人会不会把 AI 内容误认为真实？", "Could someone mistake this AI content for reality?"],
+      ["在作品上标注“AI 生成漫画/虚构内容”。", "Label the work as 'AI-generated comic / fictional content'."],
+      ["课堂辩题", "Debate question"],
+      ["如果同学用 AI 做老师或同学的表情包，什么时候是玩笑，什么时候是伤害？", "If a student uses AI to make a meme of a teacher or classmate, when is it a joke and when is it harm?"],
+      ["如果一个 AI 视频看起来很真实，转发的人需要承担责任吗？", "If an AI video looks real, should people who forward it take responsibility?"],
+      ["下一步：迭代你的豆包原型", "Next step: iterate your Doubao prototype"],
+      ["模型先不换，先用今天讲的 5 个变量做一次升级。课堂上至少迭代 2 轮，每一轮都记录“修改前是什么样、我让 AI 改了什么、修改后变成什么样”，最后用这张画布练习 1 分钟演讲。", "Do not change the model yet. Use today's 5 variables to upgrade your prototype. Iterate at least 2 rounds in class and record before, what you asked AI to change, and after. Then use this canvas for a 1-minute speech."],
+      ["把一句话变成任务单", "Turn one sentence into a task brief"],
+      ["补上用户、输入、输出、限制和成功标准。", "Add user, input, output, constraints, and success standard."],
+      ["补一个真实流程", "Add a real flow"],
+      ["至少加上开始、生成中、结果、失败提示中的 2 个状态。", "Add at least 2 states: start, generating, result, or failure message."],
+      ["圈出 1 个视觉问题", "Circle one visual issue"],
+      ["改标题、按钮、颜色、间距或第一屏重点。", "Revise title, button, color, spacing, or first-screen focus."],
+      ["至少迭代 2 轮", "Iterate at least 2 rounds"],
+      ["每轮都留下前后对比：修改前、修改后、哪里更像产品了。", "For every round, keep before/after evidence and note what feels more product-like."],
+      ["加一条人类检查", "Add one human check"],
+      ["提醒不要攻击真实的人，不泄露隐私。", "Remind users not to attack real people or leak privacy."],
+      ["迭代记录画布", "Iteration record canvas"],
+      ["第 1 轮：我想解决的问题", "Round 1: The problem I want to solve"],
+      ["原型哪里最不像产品？", "What part of the prototype feels least like a product?"],
+      ["我给 AI 的修改指令", "My instruction to AI"],
+      ["写下最关键的一句 prompt。", "Write the most important prompt sentence."],
+      ["前后对比证据", "Before/after evidence"],
+      ["修改前后哪里不一样？圈出 1 个变化。", "What changed before and after? Circle one change."],
+      ["第 2 轮：我继续发现的问题", "Round 2: The next problem I noticed"],
+      ["从审美、流程或安全里选一个。", "Choose one from design, flow, or safety."],
+      ["这次要更具体、更可检查。", "This time, make it more specific and checkable."],
+      ["截图或口头记录：哪里更像产品了？", "Screenshot or oral note: what feels more product-like?"],
+      ["1 分钟演讲提纲", "1-minute speech outline"],
+      ["我的原型原来是做什么的。", "What my original prototype did."],
+      ["我发现它最大的问题是：____。", "The biggest problem I found was: ____."],
+      ["我让 AI 做了第 1 次修改：____。", "My first AI revision request was: ____."],
+      ["我让 AI 做了第 2 次修改：____。", "My second AI revision request was: ____."],
+      ["现在它比原来更像产品，因为：____。", "Now it feels more like a product because: ____."],
+      ["下一步我还想继续优化：____。", "Next, I still want to improve: ____."],
+      ["网页背后的代码，也不一样", "The code behind the webpages is different too."],
+      ["回到差异拆解", "Back to breakdown"],
+      ["打开 A 源网页", "Open A source page"],
+      ["打开 B 源网页", "Open B source page"],
+      ["先看代码的 3 层结构", "First: the 3 layers of code"],
+      ["HTML：页面骨架", "HTML: page skeleton"],
+      ["决定有哪些屏幕、输入框、按钮、画布和结果区。它像产品的房间布局。", "Defines screens, input boxes, buttons, canvas, and result areas. It is like the floor plan of the product."],
+      ["CSS：视觉和排版", "CSS: visual design and layout"],
+      ["决定颜色、间距、动画、响应式和按钮状态。它让网页不像一张默认表格。", "Defines color, spacing, animation, responsiveness, and button states. It stops the page from feeling like a default table."],
+      ["JavaScript：行为逻辑", "JavaScript: behavior logic"],
+      ["决定点击后发生什么、如何调用 AI、失败怎么办、怎么保存和复制。", "Defines what happens after clicks, how AI is called, failure handling, saving, and copying."],
+      ["再看一眼体量和复杂度", "Then: size and complexity"],
+      ["A：学生版", "A: student version"],
+      ["约 402 行，1.5 万字符。结构清楚，适合快速做出第一版 demo。", "About 402 lines and 15K characters. Clear structure, good for making a first demo quickly."],
+      ["B：老师版", "B: teacher version"],
+      ["约 1727 行，4.9 万字符。多出来的不是炫技，而是状态、校验、兜底和产品细节。", "About 1727 lines and 49K characters. The extra code is not showing off; it is states, validation, fallback, and product detail."],
+      ["课堂结论", "Class takeaway"],
+      ["3 层", "3 layers"],
+      ["好原型通常不是只改一个按钮，而是 HTML、CSS、JS 一起升级。", "A stronger prototype usually upgrades HTML, CSS, and JS together, not just one button."],
+      ["对比 1：页面结构怎么写", "Compare 1: page structure"],
+      ["A 学生版：三个 div 页面", "A student version: three div pages"],
+      ["B 老师版：按产品状态命名", "B teacher version: named by product states"],
+      ["差异：A 已经有页面切换；B 把每个页面状态命名得更清楚，还把“语气选择、安全检查、结果文案”提前设计进结构里。", "Difference: A already switches pages. B names every state more clearly and designs tone choice, safety checks, and result copy into the structure."],
+      ["对比 2：样式是“快速套类名”，还是“设计系统”", "Compare 2: quick classes or design system"],
+      ["A 学生版：Tailwind 类名直接写在元素上", "A student version: Tailwind classes written on elements"],
+      ["B 老师版：先定义视觉规则，再复用组件", "B teacher version: define visual rules first, then reuse components"],
+      ["差异：A 适合快速搭建；B 更像“有规则的产品界面”，颜色、按钮、选中态和响应式布局都能统一调整。", "Difference: A is good for fast building. B feels like a ruled product interface, where colors, buttons, selected states, and responsive layout can be adjusted consistently."],
+      ["对比 3：点击生成后，JavaScript 做了什么", "Compare 3: what JavaScript does after clicking generate"],
+      ["A 学生版：生成 -> 随机回复 -> 画到 canvas", "A student version: generate -> random reply -> draw to canvas"],
+      ["B 老师版：校验 -> 等待页 -> AI -> 兜底 -> 结果页", "B teacher version: validate -> loading screen -> AI -> fallback -> result screen"],
+      ["差异：A 的逻辑像“按钮触发一个任务”；B 的逻辑像“产品流程”，会检查输入、安全、加载、失败兜底和结果刷新。", "Difference: A acts like a button that triggers a task. B acts like a product flow, checking input, safety, loading, fallback, and result refresh."],
+      ["对比 4：AI 生成提示词和安全边界", "Compare 4: AI prompt and safety boundaries"],
+      ["A 学生版：一个固定画面 prompt", "A student version: one fixed image prompt"],
+      ["B 老师版：把场景、留白、限制都写进 prompt", "B teacher version: scenario, blank space, and constraints are written into the prompt"],
+      ["差异：A 能生成图；B 会告诉 AI 画面结构、文字留白、安全边界和课堂展示标准，所以结果更稳定。", "Difference: A can generate an image. B tells AI the composition, text space, safety boundaries, and classroom standard, so the result is more stable."]
+    ]);
+
+    function applyBilingualText() {
+      const skipTags = new Set(["SCRIPT", "STYLE", "PRE", "CODE", "IFRAME", "TEXTAREA", "INPUT"]);
+      const nodes = [];
+
+      function collectTextNodes(root) {
+        Array.from(root.childNodes).forEach((node) => {
+          if (node.nodeType === 3) {
+            const key = node.nodeValue.trim().replace(/\s+/g, " ");
+            if (key && bilingualTranslations.has(key)) nodes.push(node);
+            return;
+          }
+
+          if (node.nodeType !== 1) return;
+          if (skipTags.has(node.tagName) || node.classList.contains("en-line") || node.hasAttribute("data-no-auto-translate")) return;
+          collectTextNodes(node);
+        });
+      }
+
+      collectTextNodes(document.body);
+
+      nodes.forEach((node) => {
+        let parent = node.parentElement;
+        let shouldSkip = false;
+        while (parent) {
+          if (skipTags.has(parent.tagName) || parent.classList.contains("en-line") || parent.hasAttribute("data-no-auto-translate")) {
+            shouldSkip = true;
+            break;
+          }
+          parent = parent.parentElement;
+        }
+
+        if (shouldSkip) return;
+
+        const key = node.nodeValue.trim().replace(/\s+/g, " ");
+        const english = bilingualTranslations.get(key);
+        const en = document.createElement("span");
+        en.className = "en-line";
+        en.lang = "en";
+        en.textContent = english;
+        node.parentNode.insertBefore(en, node.nextSibling);
+      });
+    }
+
+    function glossaryTermFromText(text) {
+      const normalized = text.toLowerCase();
+
+      if (normalized === "html/css/js") return "html-css-js";
+      if (normalized === "javascript" || normalized === "js") return "javascript";
+      if (normalized === "html") return "html";
+      if (normalized === "css") return "css";
+      if (normalized === "tailwind") return "tailwind";
+      if (normalized === "api") return "api";
+      if (normalized === "prompt") return "prompt";
+      if (normalized === "prototype") return "prototype";
+      if (normalized === "demo") return "demo";
+      if (normalized === "git") return "git";
+      if (normalized === "csv" || normalized === "cards.csv") return "csv";
+      if (normalized === "json" || normalized === "cards.json") return "json";
+      if (normalized === "tsv" || normalized.endsWith(".tsv")) return "tsv";
+      if (normalized.includes(".command")) return "command";
+      if (normalized.startsWith("debug") || text === "调试") return "debug";
+      if (normalized === "bug") return "bug";
+      if (normalized === "src/" || normalized === "scripts/") return "source-folders";
+      if (normalized.startsWith("build") || normalized === "构建") return "build";
+      if (normalized.startsWith("deploy") || normalized === "部署") return "deploy";
+      if (normalized.startsWith("responsive") || text === "响应式") return "responsive";
+      if (normalized.startsWith("component") || text === "组件") return "component";
+      if (normalized === "design system" || text === "设计系统") return "design-system";
+      if (normalized === "pipeline" || text === "管线") return "pipeline";
+      if (normalized === "deepfake" || text === "深伪") return "deepfake";
+      if (normalized === "watermark" || text === "水印") return "watermark";
+      if (normalized === "privacy" || text === "隐私") return "privacy";
+      if (normalized === "quota") return "quota";
+      if (normalized === "subscription fees") return "subscription";
+      if (normalized === "token") return "token";
+      if (normalized === "iterate") return "iterate";
+      return "";
+    }
+
+    function shouldSkipGlossaryNode(node) {
+      const parent = node.parentElement;
+      if (!parent) return true;
+      return !!parent.closest(
+        "button, a, pre, code, script, style, iframe, textarea, input, .marker-word, .glossary-popover, .model-tags, .model-legend, [data-no-glossary]"
+      );
+    }
+
+    function applyGlossaryHighlights() {
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      const highlightCounts = new Map();
+      let node = walker.nextNode();
+
+      while (node) {
+        if (!shouldSkipGlossaryNode(node) && glossaryPattern.test(node.nodeValue)) {
+          nodes.push(node);
+        }
+        glossaryPattern.lastIndex = 0;
+        node = walker.nextNode();
+      }
+
+      nodes.forEach((textNode) => {
+        const text = textNode.nodeValue;
+        const fragment = document.createDocumentFragment();
+        let lastIndex = 0;
+        let match = glossaryPattern.exec(text);
+
+        while (match) {
+          const matchedText = match[0];
+          const term = glossaryTermFromText(matchedText);
+          const limit = glossaryHighlightLimits.get(term) || 12;
+          const currentCount = highlightCounts.get(term) || 0;
+
+          if (match.index > lastIndex) {
+            fragment.append(document.createTextNode(text.slice(lastIndex, match.index)));
+          }
+
+          if (term && currentCount < limit) {
+            const button = document.createElement("button");
+            button.className = "marker-word";
+            button.type = "button";
+            button.dataset.glossary = term;
+            button.setAttribute("aria-expanded", "false");
+            button.setAttribute("aria-controls", "glossaryFloat");
+            button.textContent = matchedText;
+            fragment.append(button);
+            highlightCounts.set(term, currentCount + 1);
+          } else {
+            fragment.append(document.createTextNode(matchedText));
+          }
+
+          lastIndex = match.index + matchedText.length;
+          match = glossaryPattern.exec(text);
+        }
+
+        if (lastIndex < text.length) {
+          fragment.append(document.createTextNode(text.slice(lastIndex)));
+        }
+
+        glossaryPattern.lastIndex = 0;
+        textNode.parentNode.replaceChild(fragment, textNode);
+      });
+    }
+
+    function getGlossaryButtons() {
+      return Array.from(document.querySelectorAll("[data-glossary]"));
+    }
+
+    function closeGlossaryCard() {
+      if (!glossaryFloat || !glossaryBackdrop) return;
+      glossaryFloat.hidden = true;
+      glossaryBackdrop.hidden = true;
+      glossaryFloat.innerHTML = "";
+      getGlossaryButtons().forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    function openGlossaryCard(button) {
+      if (!glossaryFloat || !glossaryBackdrop) return;
+      const term = button.dataset.glossary;
+      const template = document.querySelector(`[data-glossary-card="${term}"]`);
+      if (!template) return;
+
+      const wasOpen = !glossaryFloat.hidden && button.getAttribute("aria-expanded") === "true";
+      closeGlossaryCard();
+      if (wasOpen) return;
+
+      glossaryFloat.innerHTML = `<button class="glossary-close" type="button" data-glossary-close>收起</button>${template.innerHTML}`;
+      glossaryFloat.hidden = false;
+      glossaryBackdrop.hidden = false;
+
+      getGlossaryButtons()
+        .filter((item) => item.dataset.glossary === term)
+        .forEach((item) => item.setAttribute("aria-expanded", "true"));
+    }
+
+    applyBilingualText();
+    applyGlossaryHighlights();
+
+    function showAnalysis() {
+      codeCompare.classList.remove("show");
+      analysis.classList.add("show");
+      analysis.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function showCodeCompare() {
+      analysis.classList.remove("show");
+      codeCompare.classList.add("show");
+      codeCompare.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    revealBtn.addEventListener("click", showAnalysis);
+
+    backBtn.addEventListener("click", () => {
+      codeCompare.classList.remove("show");
+      observe.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    codeCompareBtn.addEventListener("click", showCodeCompare);
+    backAnalysisBtn.addEventListener("click", showAnalysis);
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("[data-glossary-close]")) {
+        closeGlossaryCard();
+        return;
+      }
+
+      const glossaryButton = event.target.closest("[data-glossary]");
+      if (!glossaryButton) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      openGlossaryCard(glossaryButton);
+    });
+
+    glossaryBackdrop.addEventListener("click", closeGlossaryCard);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeGlossaryCard();
+    });
+
+    function openDetail(key) {
+      detailStage.classList.add("show");
+
+      factorButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.detail === key);
+      });
+
+      detailPages.forEach((page) => {
+        page.classList.toggle("active", page.dataset.detailPage === key);
+      });
+
+      detailStage.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function closeDetail() {
+      detailStage.classList.remove("show");
+      factorButtons.forEach((button) => button.classList.remove("active"));
+      detailPages.forEach((page) => page.classList.remove("active"));
+      document.querySelector(".factor-board").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    factorButtons.forEach((button) => {
+      button.addEventListener("click", () => openDetail(button.dataset.detail));
+    });
+
+    closeDetailButtons.forEach((button) => {
+      button.addEventListener("click", closeDetail);
+    });
+  </script>
+</body>
+</html>
