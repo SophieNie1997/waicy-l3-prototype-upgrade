@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>吐槽星球漫画工厂</title>
+  <title>Complaint Comic Factory / 吐槽星球漫画工厂</title>
   <style>
     :root {
       color-scheme: light;
@@ -114,6 +114,58 @@
       margin-top: 4px;
       color: #554936;
       font-weight: 800;
+    }
+
+    .en-main {
+      display: block;
+      color: var(--ink);
+      font-weight: 1000;
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .zh-sub {
+      display: block;
+      margin-top: 3px;
+      color: #6b5e49;
+      font-size: 0.74em;
+      font-weight: 850;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .brand h1 .en-main {
+      color: var(--red-deep);
+    }
+
+    .brand h1 .zh-sub {
+      color: var(--ink);
+      font-size: 0.68em;
+    }
+
+    .brand p .en-main {
+      font-size: 1.02rem;
+    }
+
+    .brand p .zh-sub {
+      font-size: 0.78rem;
+    }
+
+    .status-pill .zh-sub,
+    .primary .zh-sub,
+    .secondary .zh-sub,
+    .mini-action .zh-sub {
+      margin-top: 1px;
+      font-size: 0.68em;
+    }
+
+    .primary .en-main,
+    .primary .zh-sub {
+      color: #fffdf5;
+    }
+
+    .primary .zh-sub {
+      color: #ffe7bd;
     }
 
     .status-pill {
@@ -264,6 +316,12 @@
       font-size: 1rem;
     }
 
+    label .en-main,
+    .panel-head .en-main,
+    .safety-box h3 .en-main {
+      font-size: 1.06em;
+    }
+
     textarea {
       width: 100%;
       min-height: 148px;
@@ -292,6 +350,11 @@
       font-weight: 760;
     }
 
+    .hint .en-main {
+      color: #40372b;
+      font-size: 1em;
+    }
+
     .samples {
       display: grid;
       grid-template-columns: 1fr;
@@ -307,6 +370,12 @@
       padding: 0 12px;
       font-weight: 900;
       text-align: left;
+    }
+
+    .sample-btn .en-main,
+    .tone .en-main,
+    .check-row .en-main {
+      font-size: 1em;
     }
 
     .sample-btn:hover {
@@ -356,6 +425,11 @@
       line-height: 1.35;
     }
 
+    .tone small .en-main {
+      color: #3b3328;
+      font-size: 1em;
+    }
+
     .safety-box {
       border: 3px solid var(--line);
       border-radius: 16px;
@@ -378,6 +452,10 @@
       color: #4e4334;
       font-weight: 820;
       line-height: 1.38;
+    }
+
+    .check-row .zh-sub {
+      font-size: 0.82em;
     }
 
     .check-row input {
@@ -578,6 +656,15 @@
       max-width: 48ch;
     }
 
+    .loader-card h2 .en-main {
+      font-size: clamp(1.9rem, 4.6vw, 3.3rem);
+    }
+
+    .loader-card p .en-main,
+    .preview-head p .en-main {
+      font-size: 1.06em;
+    }
+
     .loading-steps {
       display: flex;
       flex-wrap: wrap;
@@ -589,6 +676,8 @@
     .loading-steps span {
       min-height: 34px;
       display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
       border: 2px solid var(--line);
       border-radius: 999px;
@@ -596,6 +685,11 @@
       background: #dbfff8;
       font-weight: 950;
       animation: stepGlow 1.2s ease-in-out infinite alternate;
+    }
+
+    .loading-steps .zh-sub {
+      margin-top: 0;
+      font-size: 0.68em;
     }
 
     .loading-steps span:nth-child(2) {
@@ -653,6 +747,15 @@
       text-align: center;
       font-weight: 1000;
       line-height: 1.05;
+    }
+
+    .meter .en-main,
+    .meter .zh-sub {
+      color: inherit;
+    }
+
+    .meter .zh-sub {
+      font-size: 0.66em;
     }
 
     .result-zone {
@@ -746,10 +849,19 @@
       font-size: 0.95rem;
     }
 
+    .copy-card strong .en-main {
+      color: var(--red-deep);
+      font-size: 1.05em;
+    }
+
     .copy-card p {
       color: #3f362a;
       font-weight: 840;
       line-height: 1.5;
+    }
+
+    .copy-card p .en-main {
+      font-size: 1.08em;
     }
 
     .tag-row {
@@ -760,6 +872,8 @@
 
     .tag {
       display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
       min-height: 34px;
       border: 2px solid var(--line);
@@ -768,6 +882,12 @@
       background: #dbfff8;
       font-weight: 950;
       font-size: 0.88rem;
+    }
+
+    .tag .zh-sub {
+      margin-top: 0;
+      font-size: 0.7em;
+      text-align: center;
     }
 
     .tag:nth-child(2) {
@@ -835,7 +955,24 @@
       }
     }
 
-    @media (max-width: 740px) {
+    @media (min-width: 561px) and (max-width: 760px) {
+      .input-screen .control-panel {
+        padding-bottom: 88px;
+      }
+
+      .input-screen .action-bar {
+        position: fixed;
+        left: 14px;
+        right: 14px;
+        bottom: 12px;
+        z-index: 4;
+        border: 4px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+      }
+    }
+
+    @media (max-width: 560px) {
       .app {
         width: min(100% - 18px, 1480px);
       }
@@ -882,16 +1019,25 @@
 <body>
   <main class="app">
     <header class="topbar">
-      <div class="brand" aria-label="吐槽星球漫画工厂">
+      <div class="brand" aria-label="Complaint Comic Factory">
         <div class="brand-mark">吐</div>
         <div>
-          <h1>吐槽星球漫画工厂</h1>
-          <p>把一句不开心，变成一张能分享的友善吐槽漫画。</p>
+          <h1>
+            <span class="en-main" lang="en">Complaint Comic Factory</span>
+            <span class="zh-sub">吐槽星球漫画工厂</span>
+          </h1>
+          <p>
+            <span class="en-main" lang="en">Turn one bad mood into a kind, shareable comic.</span>
+            <span class="zh-sub">把一句不开心，变成一张能分享的友善吐槽漫画。</span>
+          </p>
         </div>
       </div>
       <div class="status-pill" aria-live="polite">
         <i class="status-dot"></i>
-        <span id="topStatus">正在检查 AI 连接</span>
+        <span id="topStatus">
+          <span class="en-main" lang="en">Checking AI connection</span>
+          <span class="zh-sub">正在检查 AI 连接</span>
+        </span>
       </div>
     </header>
 
@@ -899,60 +1045,87 @@
       <section class="screen input-screen active" id="inputScreen" aria-label="输入页">
       <aside class="control-panel">
         <div class="panel-head">
-          <strong>输入工作台</strong>
-          <span>1 句话 + 1 种语气</span>
+          <strong>
+            <span class="en-main" lang="en">Input Desk</span>
+            <span class="zh-sub">输入工作台</span>
+          </strong>
+          <span>
+            <span class="en-main" lang="en">1 sentence + 1 tone</span>
+            <span class="zh-sub">1 句话 + 1 种语气</span>
+          </span>
         </div>
 
         <div class="form-body">
           <section>
-            <label for="complaintInput">今天想吐槽什么？</label>
-            <textarea id="complaintInput" maxlength="80">今天作业像突然加速的过山车，我还没坐稳就冲下去了。</textarea>
-            <p class="hint">最多 80 个字。系统会把尖锐表达改成好笑、友善、可分享的漫画台词。</p>
+            <label for="complaintInput">
+              <span class="en-main" lang="en">What do you want to complain about today?</span>
+              <span class="zh-sub">今天想吐槽什么？</span>
+            </label>
+            <textarea id="complaintInput" maxlength="120">Homework felt like a roller coaster that sped up before I even sat down.</textarea>
+            <p class="hint">
+              <span class="en-main" lang="en">Up to 120 characters. The system turns sharp feelings into funny, kind, shareable comic lines.</span>
+              <span class="zh-sub">最多 120 个字符。系统会把尖锐表达改成好笑、友善、可分享的漫画台词。</span>
+            </p>
             <p class="error" id="errorMsg" aria-live="polite"></p>
           </section>
 
           <section>
-            <label>快速试试</label>
+            <label>
+              <span class="en-main" lang="en">Try a quick example</span>
+              <span class="zh-sub">快速试试</span>
+            </label>
             <div class="samples">
-              <button class="sample-btn" type="button" data-sample="今天小组讨论像开了十个浏览器标签，每个人都在不同页面。">小组讨论太混乱</button>
-              <button class="sample-btn" type="button" data-sample="我明明只晚交一分钟，感觉时间守卫已经吹响警报。">作业差点晚交</button>
-              <button class="sample-btn" type="button" data-sample="老师说再来一道练习题，我的大脑立刻进入省电模式。">练习题太多</button>
+              <button class="sample-btn" type="button" data-sample="Our group discussion felt like ten browser tabs playing at the same time.">
+                <span class="en-main" lang="en">Messy group talk</span>
+                <span class="zh-sub">小组讨论太混乱</span>
+              </button>
+              <button class="sample-btn" type="button" data-sample="I was only one minute late, but the time guard had already sounded the alarm.">
+                <span class="en-main" lang="en">Almost late homework</span>
+                <span class="zh-sub">作业差点晚交</span>
+              </button>
+              <button class="sample-btn" type="button" data-sample="When the teacher said one more exercise, my brain switched to battery-saving mode.">
+                <span class="en-main" lang="en">Too many exercises</span>
+                <span class="zh-sub">练习题太多</span>
+              </button>
             </div>
           </section>
 
           <section>
-            <label>选择漫画语气</label>
+            <label>
+              <span class="en-main" lang="en">Choose the comic tone</span>
+              <span class="zh-sub">选择漫画语气</span>
+            </label>
             <div class="tone-grid" role="list">
-              <button class="tone active" type="button" data-tone="轻松玩笑" data-desc="好笑但不伤人">
-                <strong>轻松玩笑</strong>
-                <small>像朋友之间开个小玩笑。</small>
+              <button class="tone active" type="button" data-tone="轻松玩笑" data-desc-en="Funny, not mean" data-desc-zh="好笑但不伤人">
+                <strong><span class="en-main" lang="en">Playful joke</span><span class="zh-sub">轻松玩笑</span></strong>
+                <small><span class="en-main" lang="en">Like a friendly joke.</span><span class="zh-sub">像朋友之间开个小玩笑。</span></small>
               </button>
-              <button class="tone" type="button" data-tone="夸张漫画" data-desc="画面感更强">
-                <strong>夸张漫画</strong>
-                <small>把情绪放大成漫画场景。</small>
+              <button class="tone" type="button" data-tone="夸张漫画" data-desc-en="More dramatic" data-desc-zh="画面感更强">
+                <strong><span class="en-main" lang="en">Big comic drama</span><span class="zh-sub">夸张漫画</span></strong>
+                <small><span class="en-main" lang="en">Make the feeling larger than life.</span><span class="zh-sub">把情绪放大成漫画场景。</span></small>
               </button>
-              <button class="tone" type="button" data-tone="温柔吐槽" data-desc="更适合分享">
-                <strong>温柔吐槽</strong>
-                <small>保留感受，但语气更软。</small>
+              <button class="tone" type="button" data-tone="温柔吐槽" data-desc-en="Easy to share" data-desc-zh="更适合分享">
+                <strong><span class="en-main" lang="en">Gentle complaint</span><span class="zh-sub">温柔吐槽</span></strong>
+                <small><span class="en-main" lang="en">Keep the feeling, soften the tone.</span><span class="zh-sub">保留感受，但语气更软。</span></small>
               </button>
-              <button class="tone" type="button" data-tone="自嘲模式" data-desc="主角也很可爱">
-                <strong>自嘲模式</strong>
-                <small>把尴尬变成可爱瞬间。</small>
+              <button class="tone" type="button" data-tone="自嘲模式" data-desc-en="Cute main character" data-desc-zh="主角也很可爱">
+                <strong><span class="en-main" lang="en">Laugh at myself</span><span class="zh-sub">自嘲模式</span></strong>
+                <small><span class="en-main" lang="en">Turn awkward into adorable.</span><span class="zh-sub">把尴尬变成可爱瞬间。</span></small>
               </button>
             </div>
           </section>
 
           <section class="safety-box" aria-label="发布前检查">
-            <h3>发布前检查</h3>
-            <label class="check-row"><input type="checkbox" class="review-check" checked>没有攻击真实同学或老师</label>
-            <label class="check-row"><input type="checkbox" class="review-check" checked>读起来是搞笑，不是伤害</label>
-            <label class="check-row"><input type="checkbox" class="review-check" checked>可以放心展示给全班看</label>
+            <h3><span class="en-main" lang="en">Before sharing</span><span class="zh-sub">发布前检查</span></h3>
+            <label class="check-row"><input type="checkbox" class="review-check" checked><span><span class="en-main" lang="en">No real classmate or teacher is attacked.</span><span class="zh-sub">没有攻击真实同学或老师</span></span></label>
+            <label class="check-row"><input type="checkbox" class="review-check" checked><span><span class="en-main" lang="en">It feels funny, not hurtful.</span><span class="zh-sub">读起来是搞笑，不是伤害</span></span></label>
+            <label class="check-row"><input type="checkbox" class="review-check" checked><span><span class="en-main" lang="en">Safe to show to the whole class.</span><span class="zh-sub">可以放心展示给全班看</span></span></label>
           </section>
         </div>
 
         <div class="action-bar">
-          <button class="primary" id="generateBtn" type="button">生成吐槽漫画</button>
-          <button class="secondary" id="resetBtn" type="button">换一个开场</button>
+          <button class="primary" id="generateBtn" type="button"><span class="en-main" lang="en">Generate comic</span><span class="zh-sub">生成吐槽漫画</span></button>
+          <button class="secondary" id="resetBtn" type="button"><span class="en-main" lang="en">Try another starter</span><span class="zh-sub">换一个开场</span></button>
         </div>
       </aside>
       </section>
@@ -966,12 +1139,12 @@
               <i class="orbit-dot"></i>
               <span class="planet-mouth"></span>
             </div>
-            <h2>正在把槽点揉成漫画</h2>
-            <p>AI 正在先理解你的心情，再把它改写成友善台词，最后塞进一张可分享的漫画里。</p>
+            <h2><span class="en-main" lang="en">Turning the complaint into a comic</span><span class="zh-sub">正在把槽点揉成漫画</span></h2>
+            <p><span class="en-main" lang="en">AI first understands the mood, rewrites it as a kind line, then places it into a shareable comic.</span><span class="zh-sub">AI 正在先理解你的心情，再把它改写成友善台词，最后塞进一张可分享的漫画里。</span></p>
             <div class="loading-steps" aria-label="生成步骤">
-              <span>读懂吐槽</span>
-              <span>画出场景</span>
-              <span>加上台词</span>
+              <span><span class="en-main" lang="en">Read mood</span><span class="zh-sub">读懂吐槽</span></span>
+              <span><span class="en-main" lang="en">Draw scene</span><span class="zh-sub">画出场景</span></span>
+              <span><span class="en-main" lang="en">Add line</span><span class="zh-sub">加上台词</span></span>
             </div>
           </div>
         </div>
@@ -981,10 +1154,10 @@
       <section class="preview-panel" aria-label="漫画结果">
         <div class="preview-head">
           <div>
-            <h2 id="heroTitle">今天的槽点，被画出来了</h2>
-            <p id="heroLead">右侧不是说明书，而是一个真实的结果区：AI 漫画、标题、改写台词、情绪标签和人类检查会一起更新。</p>
+            <h2 id="heroTitle"><span class="en-main" lang="en">Today's complaint became a comic</span><span class="zh-sub">今天的槽点，被画出来了</span></h2>
+            <p id="heroLead"><span class="en-main" lang="en">This is a real result area: AI image, title, rewritten line, emotion tags, and human checks update together.</span><span class="zh-sub">右侧不是说明书，而是一个真实的结果区：AI 漫画、标题、改写台词、情绪标签和人类检查会一起更新。</span></p>
           </div>
-          <div class="meter" id="kindMeter">友善度<br>96%</div>
+          <div class="meter" id="kindMeter"><span class="en-main" lang="en">Kindness<br>96%</span><span class="zh-sub">友善度</span></div>
         </div>
 
         <div class="result-zone">
@@ -992,7 +1165,7 @@
             <canvas id="comicCanvas" width="1200" height="900" aria-label="生成的吐槽漫画"></canvas>
             <div class="loading-shade" id="loadingShade" aria-live="polite">
               <div class="loading-card">
-                <div>正在把情绪压缩成漫画能量</div>
+                <div><span class="en-main" lang="en">Compressing feelings into comic energy</span><span class="zh-sub">正在把情绪压缩成漫画能量</span></div>
                 <div class="loading-line"><i></i></div>
               </div>
             </div>
@@ -1000,37 +1173,37 @@
 
           <aside class="result-copy">
             <article class="copy-card">
-              <strong>漫画标题</strong>
-              <p id="titleText">作业过山车事件</p>
+              <strong><span class="en-main" lang="en">Comic title</span><span class="zh-sub">漫画标题</span></strong>
+              <p id="titleText"><span class="en-main" lang="en">Homework Roller Coaster</span><span class="zh-sub">作业过山车事件</span></p>
             </article>
             <article class="copy-card">
-              <strong>主角台词</strong>
-              <p id="bubbleText">作业车门还没关，我已经被题海带飞了！</p>
+              <strong><span class="en-main" lang="en">Main character line</span><span class="zh-sub">主角台词</span></strong>
+              <p id="bubbleText"><span class="en-main" lang="en">The homework ride started before I even buckled in!</span><span class="zh-sub">作业车门还没关，我已经被题海带飞了！</span></p>
             </article>
             <article class="copy-card">
-              <strong>友善回复</strong>
-              <p id="replyText">先抓住一个最小任务，做完再挑战下一段轨道。</p>
+              <strong><span class="en-main" lang="en">Kind reply</span><span class="zh-sub">友善回复</span></strong>
+              <p id="replyText"><span class="en-main" lang="en">Start with the smallest task, then ride the next track.</span><span class="zh-sub">先抓住一个最小任务，做完再挑战下一段轨道。</span></p>
             </article>
             <div class="tag-row" id="tagRow">
-              <span class="tag">轻松玩笑</span>
-              <span class="tag">可分享</span>
-              <span class="tag">已降温</span>
+              <span class="tag"><span class="en-main" lang="en">Playful joke</span><span class="zh-sub">轻松玩笑</span></span>
+              <span class="tag"><span class="en-main" lang="en">Shareable</span><span class="zh-sub">可分享</span></span>
+              <span class="tag"><span class="en-main" lang="en">Cooled down</span><span class="zh-sub">已降温</span></span>
             </div>
           </aside>
         </div>
 
         <div class="result-actions">
-          <button class="mini-action" id="copyBtn" type="button">复制文案</button>
-          <button class="mini-action feature" id="saveBtn" type="button">保存漫画</button>
-          <button class="mini-action" id="backEditBtn" type="button">返回修改</button>
-          <button class="mini-action" id="againBtn" type="button">再生成一次</button>
+          <button class="mini-action" id="copyBtn" type="button"><span class="en-main" lang="en">Copy text</span><span class="zh-sub">复制文案</span></button>
+          <button class="mini-action feature" id="saveBtn" type="button"><span class="en-main" lang="en">Save comic</span><span class="zh-sub">保存漫画</span></button>
+          <button class="mini-action" id="backEditBtn" type="button"><span class="en-main" lang="en">Edit again</span><span class="zh-sub">返回修改</span></button>
+          <button class="mini-action" id="againBtn" type="button"><span class="en-main" lang="en">Generate again</span><span class="zh-sub">再生成一次</span></button>
         </div>
       </section>
       </section>
     </section>
   </main>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">已完成</div>
+  <div class="toast" id="toast" role="status" aria-live="polite">Done / 已完成</div>
 
   <script>
     const input = document.getElementById("complaintInput");
@@ -1059,46 +1232,103 @@
     const checks = Array.from(document.querySelectorAll(".review-check"));
     const canCallLocalApi = window.location.protocol === "http:" || window.location.protocol === "https:";
 
+    function setBilingualText(element, english, chinese) {
+      element.textContent = "";
+      const en = document.createElement("span");
+      en.className = "en-main";
+      en.lang = "en";
+      en.textContent = english;
+      element.append(en);
+      if (chinese) {
+        const zh = document.createElement("span");
+        zh.className = "zh-sub";
+        zh.textContent = chinese;
+        element.append(zh);
+      }
+    }
+
+    function setBilingualHtml(element, englishHtml, chinese) {
+      element.textContent = "";
+      const en = document.createElement("span");
+      en.className = "en-main";
+      en.lang = "en";
+      en.innerHTML = englishHtml;
+      element.append(en);
+      if (chinese) {
+        const zh = document.createElement("span");
+        zh.className = "zh-sub";
+        zh.textContent = chinese;
+        element.append(zh);
+      }
+    }
+
+    function makeTag(english, chinese) {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      setBilingualText(tag, english, chinese);
+      return tag;
+    }
+
     const tones = {
       "轻松玩笑": {
-        title: "槽点变气球",
-        bubble: "我的心情刚冒烟，就被漫画风吹成了气球。",
-        reply: "先笑一下，再把事情拆成一小步处理。",
+        en: "Playful joke",
+        title: "Mood Balloon",
+        titleZh: "槽点变气球",
+        bubble: "My mood started smoking, then comic wind turned it into a balloon.",
+        bubbleZh: "我的心情刚冒烟，就被漫画风吹成了气球。",
+        reply: "Laugh first, then split the problem into one tiny step.",
+        replyZh: "先笑一下，再把事情拆成一小步处理。",
         color: "#16b8a7",
         face: "#f7c948",
-        meter: "友善度<br>96%"
+        meter: "Kindness<br>96%",
+        meterZh: "友善度 96%"
       },
       "夸张漫画": {
-        title: "情绪怪兽登场",
-        bubble: "这件事的音量已经大到需要漫画字幕了！",
-        reply: "把怪兽画出来，它就没那么吓人了。",
+        en: "Big comic drama",
+        title: "Emotion Monster Appears",
+        titleZh: "情绪怪兽登场",
+        bubble: "This problem is so loud it needs comic subtitles!",
+        bubbleZh: "这件事的音量已经大到需要漫画字幕了！",
+        reply: "Draw the monster first, then it feels less scary.",
+        replyZh: "把怪兽画出来，它就没那么吓人了。",
         color: "#ff6048",
         face: "#fff0b8",
-        meter: "戏剧值<br>92%"
+        meter: "Drama<br>92%",
+        meterZh: "戏剧值 92%"
       },
       "温柔吐槽": {
-        title: "小声但有梗",
-        bubble: "我不是生气，我只是需要一点点缓冲时间。",
-        reply: "可以表达不舒服，也可以保留礼貌。",
+        en: "Gentle complaint",
+        title: "Soft but Funny",
+        titleZh: "小声但有梗",
+        bubble: "I am not angry. I just need a tiny buffer moment.",
+        bubbleZh: "我不是生气，我只是需要一点点缓冲时间。",
+        reply: "You can share discomfort and still stay kind.",
+        replyZh: "可以表达不舒服，也可以保留礼貌。",
         color: "#79ba4a",
         face: "#dbfff8",
-        meter: "安全度<br>98%"
+        meter: "Safety<br>98%",
+        meterZh: "安全度 98%"
       },
       "自嘲模式": {
-        title: "主角省电中",
-        bubble: "我本人正在加载，进度条还在努力。",
-        reply: "允许自己慢一点，下一步先做最简单的。",
+        en: "Laugh at myself",
+        title: "Main Character Loading",
+        titleZh: "主角省电中",
+        bubble: "I am still loading. The progress bar is trying its best.",
+        bubbleZh: "我本人正在加载，进度条还在努力。",
+        reply: "It is okay to go slowly. Start with the easiest next step.",
+        replyZh: "允许自己慢一点，下一步先做最简单的。",
         color: "#f7c948",
         face: "#ffd8d0",
-        meter: "可爱值<br>94%"
+        meter: "Cuteness<br>94%",
+        meterZh: "可爱值 94%"
       }
     };
 
     const starters = [
-      "今天作业像突然加速的过山车，我还没坐稳就冲下去了。",
-      "今天小组讨论像开了十个浏览器标签，每个人都在不同页面。",
-      "老师说再来一道练习题，我的大脑立刻进入省电模式。",
-      "我明明只晚交一分钟，感觉时间守卫已经吹响警报。"
+      "Homework felt like a roller coaster that sped up before I even sat down.",
+      "Our group discussion felt like ten browser tabs playing at the same time.",
+      "When the teacher said one more exercise, my brain switched to battery-saving mode.",
+      "I was only one minute late, but the time guard had already sounded the alarm."
     ];
 
     let activeTone = "轻松玩笑";
@@ -1134,36 +1364,64 @@
     function createResult(rawText) {
       const clean = sanitize(rawText);
       const tone = tones[activeTone];
-      const subject = clean.includes("作业") ? "作业" : clean.includes("小组") ? "小组" : clean.includes("老师") ? "练习" : "今日槽点";
+      const lower = clean.toLowerCase();
+      const subjectZh = clean.includes("作业") || lower.includes("homework") ? "作业" : clean.includes("小组") || lower.includes("group") ? "小组" : clean.includes("老师") || lower.includes("teacher") || lower.includes("exercise") ? "练习" : "今日槽点";
+      const subjectEn = lower.includes("homework") || clean.includes("作业") ? "homework" : lower.includes("group") || clean.includes("小组") ? "group work" : lower.includes("teacher") || lower.includes("exercise") || clean.includes("老师") ? "practice" : "today's complaint";
       const titles = {
-        "轻松玩笑": `${subject}小剧场开播`,
-        "夸张漫画": `${subject}怪兽突然出现`,
-        "温柔吐槽": `${subject}需要一杯温水`,
-        "自嘲模式": `我和${subject}的和平谈判`
+        "轻松玩笑": `${subjectEn} mini drama`,
+        "夸张漫画": `${subjectEn} monster appears`,
+        "温柔吐槽": `${subjectEn} needs a warm pause`,
+        "自嘲模式": `peace talks with ${subjectEn}`
+      };
+      const titlesZh = {
+        "轻松玩笑": `${subjectZh}小剧场开播`,
+        "夸张漫画": `${subjectZh}怪兽突然出现`,
+        "温柔吐槽": `${subjectZh}需要一杯温水`,
+        "自嘲模式": `我和${subjectZh}的和平谈判`
       };
       const bubbles = {
-        "轻松玩笑": `${subject}刚一出现，我的表情包就自动营业了。`,
-        "夸张漫画": `${subject}的音量太大，漫画字幕都被震出来了！`,
-        "温柔吐槽": `我对${subject}有一点点崩溃，但我可以好好说。`,
-        "自嘲模式": `遇到${subject}时，我的大脑正在礼貌地转圈。`
+        "轻松玩笑": `When ${subjectEn} showed up, my meme face opened for business.`,
+        "夸张漫画": `${subjectEn} got so loud that the comic subtitles started shaking!`,
+        "温柔吐槽": `${subjectEn} is making me wobble a little, but I can still say it kindly.`,
+        "自嘲模式": `When I meet ${subjectEn}, my brain politely starts buffering.`
+      };
+      const bubblesZh = {
+        "轻松玩笑": `${subjectZh}刚一出现，我的表情包就自动营业了。`,
+        "夸张漫画": `${subjectZh}的音量太大，漫画字幕都被震出来了！`,
+        "温柔吐槽": `我对${subjectZh}有一点点崩溃，但我可以好好说。`,
+        "自嘲模式": `遇到${subjectZh}时，我的大脑正在礼貌地转圈。`
       };
       const replies = {
+        "轻松玩笑": "Circle the most annoying part first, then give yourself a tiny reward.",
+        "夸张漫画": "Turn the feeling into a monster, then handle one horn first.",
+        "温柔吐槽": "The feeling is real. The expression can stay gentle.",
+        "自嘲模式": "Laughing does not mean giving up. It is a restart button."
+      };
+      const repliesZh = {
         "轻松玩笑": "先把最烦的部分圈出来，再给自己一个小奖励。",
         "夸张漫画": "把情绪画成怪兽，然后决定先处理它的一只角。",
         "温柔吐槽": "感受是真的，表达可以更柔软一点。",
         "自嘲模式": "笑一下不等于放弃，是给自己重新开始的按钮。"
       };
+      const activeButton = document.querySelector(".tone.active");
 
       return {
         raw: clean,
         title: titles[activeTone] || tone.title,
+        titleZh: titlesZh[activeTone] || tone.titleZh,
         bubble: bubbles[activeTone] || tone.bubble,
+        bubbleZh: bubblesZh[activeTone] || tone.bubbleZh,
         reply: replies[activeTone] || tone.reply,
+        replyZh: repliesZh[activeTone] || tone.replyZh,
         tone: activeTone,
-        desc: document.querySelector(".tone.active").dataset.desc,
+        toneEn: tone.en,
+        toneZh: activeTone,
+        desc: activeButton ? activeButton.dataset.descEn : "Kind expression",
+        descZh: activeButton ? activeButton.dataset.descZh : "友善表达",
         color: tone.color,
         face: tone.face,
         meter: tone.meter,
+        meterZh: tone.meterZh,
         source: "local-canvas"
       };
     }
@@ -1185,7 +1443,7 @@
         "Panel 2 should show the same feeling transformed into a kind, shareable comic moment.",
         "Panel 2 must contain exactly one large blank white speech bubble in the lower-left quadrant, taking about one third of the panel width.",
         "Do not draw any other speech bubbles, thought bubbles, captions, readable text, logos, or watermarks.",
-        "Keep the lower-left speech bubble completely empty so Chinese text can be overlaid by the web page.",
+        "Keep the lower-left speech bubble completely empty so the web page can overlay readable classroom text.",
         "No violence, no bullying, no real person likeness."
       ].join(" ");
     }
@@ -1195,19 +1453,29 @@
       const activeButton = document.querySelector(".tone.active");
       return {
         ...result,
-        desc: result.desc || (activeButton ? activeButton.dataset.desc : "友善表达"),
+        title: result.title || tone.title,
+        titleZh: result.titleZh || tone.titleZh,
+        bubble: result.bubble || tone.bubble,
+        bubbleZh: result.bubbleZh || tone.bubbleZh,
+        reply: result.reply || tone.reply,
+        replyZh: result.replyZh || tone.replyZh,
+        toneEn: result.toneEn || tone.en,
+        toneZh: result.toneZh || result.tone || activeTone,
+        desc: result.desc || (activeButton ? activeButton.dataset.descEn : "Kind expression"),
+        descZh: result.descZh || (activeButton ? activeButton.dataset.descZh : "友善表达"),
         color: result.color || tone.color,
         face: result.face || tone.face,
-        meter: result.meter || tone.meter
+        meter: result.meter || tone.meter,
+        meterZh: result.meterZh || tone.meterZh
       };
     }
 
     async function checkApiConfig() {
-      topStatus.textContent = "Vercel AI 生图代理已启用，接口失败时自动本地兜底。";
+      setBilingualText(topStatus, "Vercel AI image proxy enabled", "Vercel AI 生图代理已启用");
     }
 
     async function callDirectKksjImage(prompt) {
-      throw new Error("学生公开版不连接外部生图接口。");
+      throw new Error("The public page uses the Vercel backend image proxy.");
     }
 
     async function imageUrlToDataUrl(url) {
@@ -1228,7 +1496,7 @@
 
     async function requestAiComicFromProxy(text) {
       if (!canCallLocalApi) {
-        throw new Error("当前不是网页服务环境，无法调用 Vercel 生图代理。");
+        throw new Error("This page must be opened from the Vercel website to use the image proxy.");
       }
 
       const response = await fetch("/api/generate-comic", {
@@ -1241,7 +1509,7 @@
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(payload.error || "Vercel 生图代理请求失败。");
+        throw new Error(payload.error || "Vercel image proxy request failed.");
       }
       return enrichResult(payload);
     }
@@ -1430,7 +1698,7 @@
         ctx.font = "950 32px sans-serif";
         ctx.fillText(result.title, 72, 812);
         ctx.font = "800 25px sans-serif";
-        ctx.fillText(`小建议：${result.reply}`, 72, 848);
+        ctx.fillText(`Tip: ${result.reply}`, 72, 848);
       };
       image.onerror = () => drawComic({ ...result, imageDataUrl: "" });
       image.src = result.imageDataUrl;
@@ -1467,12 +1735,12 @@
 
       ctx.fillStyle = "#fffdf5";
       ctx.font = "900 58px sans-serif";
-      ctx.fillText("吐槽星球漫画工厂", 42, 78);
+      ctx.fillText("Complaint Comic Factory", 42, 78);
       ctx.fillStyle = "#171512";
-      ctx.fillRect(930, 35, 214, 48);
+      ctx.fillRect(800, 35, 344, 48);
       ctx.fillStyle = "#fffdf5";
-      ctx.font = "900 28px sans-serif";
-      ctx.fillText(result.tone, 956, 68);
+      ctx.font = "900 26px sans-serif";
+      ctx.fillText(result.toneEn || result.tone, 824, 68);
 
       const panelW = 532;
       const panelH = 548;
@@ -1494,8 +1762,8 @@
 
       ctx.fillStyle = "#171512";
       ctx.font = "950 34px sans-serif";
-      ctx.fillText("你输入的吐槽", leftX + 28, panelY + 58);
-      ctx.fillText("生成台词", rightX + 28, panelY + 58);
+      ctx.fillText("Your complaint", leftX + 28, panelY + 58);
+      ctx.fillText("Friendly line", rightX + 28, panelY + 58);
 
       drawBurst(leftX + 390, panelY + 178, 112, "#ff6048");
       drawCharacter(leftX + 120, panelY + 160, 240, "#fff0b8", "#ff6048", "夸张漫画");
@@ -1525,32 +1793,33 @@
       ctx.font = "950 44px sans-serif";
       ctx.fillText(result.title, 60, 806);
       ctx.font = "800 28px sans-serif";
-      ctx.fillText(`小建议：${result.reply}`, 60, 852);
+      ctx.fillText(`Tip: ${result.reply}`, 60, 852);
     }
 
     function refreshResult(result) {
       latest = result;
-      titleText.textContent = result.title;
-      bubbleText.textContent = result.bubble;
-      replyText.textContent = result.reply;
-      kindMeter.innerHTML = result.meter;
+      setBilingualText(titleText, result.title, result.titleZh);
+      setBilingualText(bubbleText, result.bubble, result.bubbleZh);
+      setBilingualText(replyText, result.reply, result.replyZh);
+      setBilingualHtml(kindMeter, result.meter, result.meterZh);
       const isAi = result.source === "kksj-image" || result.source === "kksj-direct";
-      topStatus.textContent = isAi ? `AI 漫画已生成：${result.imageModel || "image model"}` : "本地兜底漫画已生成";
-      heroTitle.textContent = result.title;
-      heroLead.textContent = isAi ? "这张漫画由 Vercel 后端代理请求生图模型生成，网页再叠加可读中文台词。" : "这是一份本地兜底漫画：接口不可用时，仍然保留输入、改写、检查和保存流程。";
-      tagRow.innerHTML = `
-        <span class="tag">${result.tone}</span>
-        <span class="tag">${result.desc}</span>
-        <span class="tag">${isAi ? "AI 绘图" : "公开演示"}</span>
-      `;
+      setBilingualText(topStatus, isAi ? `AI comic generated: ${result.imageModel || "image model"}` : "Local backup comic generated", isAi ? `AI 漫画已生成：${result.imageModel || "image model"}` : "本地兜底漫画已生成");
+      setBilingualText(heroTitle, result.title, result.titleZh);
+      setBilingualText(heroLead, isAi ? "This comic image was generated through the Vercel backend proxy; the webpage adds readable text for class review." : "This is a local backup comic, so the demo can continue even when the AI image service is unavailable.", isAi ? "这张漫画由 Vercel 后端代理请求生图模型生成，网页再叠加可读台词。" : "这是一份本地兜底漫画：AI 接口不可用时，演示仍然能继续。");
+      tagRow.textContent = "";
+      tagRow.append(
+        makeTag(result.toneEn || result.tone, result.toneZh || result.tone),
+        makeTag(result.desc, result.descZh),
+        makeTag(isAi ? "AI image" : "Local backup", isAi ? "AI 绘图" : "本地兜底")
+      );
       drawComic(result);
     }
 
     function friendlyError(message) {
-      if (message.includes("API")) return "后端代理暂时不可用。";
-      if (message.includes("Failed to fetch")) return "浏览器网络请求被拦截。";
+      if (message.includes("API") || message.includes("proxy")) return "The backend image proxy is temporarily unavailable / 后端生图代理暂时不可用";
+      if (message.includes("Failed to fetch")) return "Browser network request was blocked / 浏览器网络请求被拦截";
       if (message.includes("超过")) return message;
-      if (message.includes("HTTP 524")) return "网关超时，生图模型可能正在排队。";
+      if (message.includes("HTTP 524")) return "The gateway timed out; the image model may be queued / 网关超时，生图模型可能正在排队";
       return message.length > 80 ? `${message.slice(0, 80)}…` : message;
     }
 
@@ -1558,17 +1827,17 @@
       const text = input.value.trim();
       const allChecked = checks.every((box) => box.checked);
       if (!text) {
-        errorMsg.textContent = "先写一句想吐槽的话，再发射。";
+        setBilingualText(errorMsg, "Write one complaint first, then launch.", "先写一句想吐槽的话，再发射。");
         input.focus();
         return;
       }
       if (!allChecked) {
-        errorMsg.textContent = "发布前检查还没有全部通过。";
+        setBilingualText(errorMsg, "The sharing checks are not all passed yet.", "发布前检查还没有全部通过。");
         return;
       }
 
       errorMsg.textContent = "";
-      topStatus.textContent = "AI 漫画生成中";
+      setBilingualText(topStatus, "Generating AI comic", "AI 漫画生成中");
       loadingShade.classList.remove("active");
       showScreen(loadingScreen);
       generateBtn.disabled = true;
@@ -1576,13 +1845,13 @@
         const result = await requestAiComic(text);
         refreshResult(result);
         showScreen(resultScreen);
-        showToast("漫画已生成，可以保存或复制");
+        showToast("AI comic ready / AI 漫画已生成");
       } catch (error) {
         const fallback = createResult(text);
         refreshResult(fallback);
         showScreen(resultScreen);
-        errorMsg.textContent = `生成暂未成功：${friendlyError(error.message)}`;
-        showToast("已使用本地演示漫画");
+        setBilingualText(errorMsg, `AI call did not finish: ${friendlyError(error.message)}`, `AI 接口暂未成功：${friendlyError(error.message)}`);
+        showToast("AI failed; local backup used / AI 连接失败，已使用本地兜底漫画");
       } finally {
         loadingShade.classList.remove("active");
         generateBtn.disabled = !checks.every((item) => item.checked);
@@ -1609,7 +1878,7 @@
       button.addEventListener("click", () => {
         input.value = button.dataset.sample;
         input.focus();
-        showToast("已填入一个吐槽样例");
+        showToast("Example added / 已填入一个吐槽样例");
       });
     });
 
@@ -1617,7 +1886,7 @@
     againBtn.addEventListener("click", generate);
     backEditBtn.addEventListener("click", () => {
       showScreen(inputScreen);
-      topStatus.textContent = "可以继续修改输入";
+      setBilingualText(topStatus, "Keep editing your input", "可以继续修改输入");
       input.focus();
     });
 
@@ -1625,17 +1894,19 @@
       const current = input.value;
       const options = starters.filter((item) => item !== current);
       input.value = options[Math.floor(Math.random() * options.length)];
-      showToast("已经换了一个开场");
+      showToast("New starter added / 已经换了一个开场");
       input.focus();
     });
 
     copyBtn.addEventListener("click", async () => {
-      const text = `标题：${titleText.textContent}\n台词：${bubbleText.textContent}\n友善回复：${replyText.textContent}`;
+      const text = latest
+        ? `Title: ${latest.title}\n标题：${latest.titleZh}\n\nLine: ${latest.bubble}\n台词：${latest.bubbleZh}\n\nKind reply: ${latest.reply}\n友善回复：${latest.replyZh}`
+        : `Title: ${titleText.textContent}\nLine: ${bubbleText.textContent}\nKind reply: ${replyText.textContent}`;
       try {
         await navigator.clipboard.writeText(text);
-        showToast("漫画文案已复制");
+        showToast("Comic text copied / 漫画文案已复制");
       } catch (error) {
-        showToast("当前浏览器不允许自动复制，可以手动选中文字");
+        showToast("Copy blocked; select text manually / 当前浏览器不允许自动复制");
       }
     });
 
@@ -1645,9 +1916,9 @@
         link.download = "吐槽星球漫画.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
-        showToast("漫画图片已准备下载");
+        showToast("Comic image ready to download / 漫画图片已准备下载");
       } catch (error) {
-        showToast("图片可以展示，但浏览器限制了跨域保存");
+        showToast("Image can display, but saving is blocked / 图片可展示，但保存受限");
       }
     });
 

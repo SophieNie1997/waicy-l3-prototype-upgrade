@@ -57,33 +57,71 @@ function subjectFrom(text) {
 
 function makeCopy(complaint, tone) {
   const clean = sanitize(complaint);
-  const subject = subjectFrom(clean);
+  const subjectZh = subjectFrom(clean);
+  const lower = clean.toLowerCase();
+  const subjectEn = lower.includes("homework") || clean.includes("作业")
+    ? "homework"
+    : lower.includes("group") || clean.includes("小组")
+      ? "group work"
+      : lower.includes("teacher") || lower.includes("exercise") || clean.includes("老师")
+        ? "practice"
+        : "today's complaint";
   const toneName = String(tone || "轻松玩笑").slice(0, 12);
+  const toneEnMap = {
+    "轻松玩笑": "Playful joke",
+    "夸张漫画": "Big comic drama",
+    "温柔吐槽": "Gentle complaint",
+    "自嘲模式": "Laugh at myself"
+  };
   const titleMap = {
-    "轻松玩笑": `${subject}小剧场开播`,
-    "夸张漫画": `${subject}怪兽突然出现`,
-    "温柔吐槽": `${subject}需要一杯温水`,
-    "自嘲模式": `我和${subject}的和平谈判`
+    "轻松玩笑": `${subjectEn} mini drama`,
+    "夸张漫画": `${subjectEn} monster appears`,
+    "温柔吐槽": `${subjectEn} needs a warm pause`,
+    "自嘲模式": `peace talks with ${subjectEn}`
+  };
+  const titleZhMap = {
+    "轻松玩笑": `${subjectZh}小剧场开播`,
+    "夸张漫画": `${subjectZh}怪兽突然出现`,
+    "温柔吐槽": `${subjectZh}需要一杯温水`,
+    "自嘲模式": `我和${subjectZh}的和平谈判`
   };
   const bubbleMap = {
-    "轻松玩笑": `${subject}刚一出现，我的表情包就自动营业了。`,
-    "夸张漫画": `${subject}的音量太大，漫画字幕都被震出来了！`,
-    "温柔吐槽": `我对${subject}有一点点崩溃，但我可以好好说。`,
-    "自嘲模式": `遇到${subject}时，我的大脑正在礼貌地转圈。`
+    "轻松玩笑": `When ${subjectEn} showed up, my meme face opened for business.`,
+    "夸张漫画": `${subjectEn} got so loud that the comic subtitles started shaking!`,
+    "温柔吐槽": `${subjectEn} is making me wobble a little, but I can still say it kindly.`,
+    "自嘲模式": `When I meet ${subjectEn}, my brain politely starts buffering.`
+  };
+  const bubbleZhMap = {
+    "轻松玩笑": `${subjectZh}刚一出现，我的表情包就自动营业了。`,
+    "夸张漫画": `${subjectZh}的音量太大，漫画字幕都被震出来了！`,
+    "温柔吐槽": `我对${subjectZh}有一点点崩溃，但我可以好好说。`,
+    "自嘲模式": `遇到${subjectZh}时，我的大脑正在礼貌地转圈。`
   };
   const replyMap = {
+    "轻松玩笑": "Circle the most annoying part first, then give yourself a tiny reward.",
+    "夸张漫画": "Turn the feeling into a monster, then handle one horn first.",
+    "温柔吐槽": "The feeling is real. The expression can stay gentle.",
+    "自嘲模式": "Laughing does not mean giving up. It is a restart button."
+  };
+  const replyZhMap = {
     "轻松玩笑": "先把最烦的部分圈出来，再给自己一个小奖励。",
     "夸张漫画": "把情绪画成怪兽，然后决定先处理它的一只角。",
     "温柔吐槽": "感受是真的，表达可以更柔软一点。",
     "自嘲模式": "笑一下不等于放弃，是给自己重新开始的按钮。"
   };
+  const resolvedTone = titleMap[toneName] ? toneName : "轻松玩笑";
 
   return {
     raw: clean,
-    title: titleMap[toneName] || titleMap["轻松玩笑"],
-    bubble: bubbleMap[toneName] || bubbleMap["轻松玩笑"],
-    reply: replyMap[toneName] || replyMap["轻松玩笑"],
-    tone: titleMap[toneName] ? toneName : "轻松玩笑"
+    title: titleMap[resolvedTone],
+    titleZh: titleZhMap[resolvedTone],
+    bubble: bubbleMap[resolvedTone],
+    bubbleZh: bubbleZhMap[resolvedTone],
+    reply: replyMap[resolvedTone],
+    replyZh: replyZhMap[resolvedTone],
+    tone: resolvedTone,
+    toneEn: toneEnMap[resolvedTone],
+    toneZh: resolvedTone
   };
 }
 

@@ -18,8 +18,11 @@ const core = require("../api/generate-comic-core.js");
 
 const copy = core.makeCopy("去死，今天作业太多了", "夸张漫画");
 assert.equal(copy.tone, "夸张漫画");
+assert.equal(copy.toneEn, "Big comic drama");
+assert.equal(copy.toneZh, "夸张漫画");
 assert.equal(copy.raw.includes("去死"), false);
-assert.equal(copy.title, "作业怪兽突然出现");
+assert.equal(copy.title, "homework monster appears");
+assert.equal(copy.titleZh, "作业怪兽突然出现");
 
 let requestedUrl = "";
 let requestedOptions = {};
@@ -48,6 +51,10 @@ assert.match(requestedOptions.body, /test-image-model/);
 assert.equal(payload.imageDataUrl, "data:image/png;base64,abc123");
 assert.equal(payload.imageModel, "test-image-model");
 assert.equal(payload.source, "kksj-image");
+assert.equal(payload.title, "homework needs a warm pause");
+assert.equal(payload.titleZh, "作业需要一杯温水");
+assert.equal(payload.toneEn, "Gentle complaint");
+assert.equal(payload.toneZh, "温柔吐槽");
 
 await assert.rejects(
   () => core.generateComicPayload({ complaint: "作业太多", tone: "轻松玩笑" }, { fetchImpl: async () => ({}) }),
