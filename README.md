@@ -8,4 +8,6 @@ Public student review site for WAICY Lesson 3.
 - `teacher-version/teacher-version.html`: public-safe teacher upgrade demo.
 - `student-original/website.html`: original student prototype from Lesson 2.
 
-This public GitHub Pages version does not include private API keys. The teacher demo uses a local browser-only fallback so students can review the interaction safely at home.
+The deployed Vercel version uses `/api/generate-comic` as a backend proxy for image generation. The API key must be stored in Vercel as the `KKSJ_API_KEY` environment variable and must never be written into the HTML or browser JavaScript.
+
+If the backend image request fails, the teacher demo falls back to a local browser-only canvas comic so students can still review the interaction safely at home.

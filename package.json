@@ -1,0 +1,7 @@
+{
+  "name": "waicy-l3-prototype-upgrade",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/verify-vercel-proxy.mjs"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/generate-comic.js": {
+      "maxDuration": 60
+    }
+  }
+}

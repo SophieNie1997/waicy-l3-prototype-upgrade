@@ -1057,8 +1057,7 @@
     const heroLead = document.getElementById("heroLead");
     const toast = document.getElementById("toast");
     const checks = Array.from(document.querySelectorAll(".review-check"));
-    const PUBLIC_STUDENT_VERSION = true;
-    const canCallLocalApi = false;
+    const canCallLocalApi = window.location.protocol === "http:" || window.location.protocol === "https:";
 
     const tones = {
       "轻松玩笑": {
@@ -1204,7 +1203,7 @@
     }
 
     async function checkApiConfig() {
-      topStatus.textContent = "学生公开版：不连接私密 API，使用本地演示漫画。";
+      topStatus.textContent = "Vercel AI 生图代理已启用，接口失败时自动本地兜底。";
     }
 
     async function callDirectKksjImage(prompt) {
@@ -1228,11 +1227,27 @@
     }
 
     async function requestAiComicFromProxy(text) {
-      throw new Error("学生公开版不调用本地代理。");
+      if (!canCallLocalApi) {
+        throw new Error("当前不是网页服务环境，无法调用 Vercel 生图代理。");
+      }
+
+      const response = await fetch("/api/generate-comic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          complaint: text,
+          tone: activeTone
+        })
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error || "Vercel 生图代理请求失败。");
+      }
+      return enrichResult(payload);
     }
 
     async function requestAiComic(text) {
-      return enrichResult(createResult(text));
+      return await requestAiComicFromProxy(text);
     }
 
     function drawRoundedRect(x, y, w, h, r) {
@@ -1520,9 +1535,9 @@
       replyText.textContent = result.reply;
       kindMeter.innerHTML = result.meter;
       const isAi = result.source === "kksj-image" || result.source === "kksj-direct";
-      topStatus.textContent = isAi ? `AI 漫画已生成：${result.imageModel || "image model"}` : "公开版本地漫画已生成";
+      topStatus.textContent = isAi ? `AI 漫画已生成：${result.imageModel || "image model"}` : "本地兜底漫画已生成";
       heroTitle.textContent = result.title;
-      heroLead.textContent = isAi ? "这张漫画由生图模型生成，网页再叠加可读中文台词，适合课堂稳定展示。" : "这是一份学生公开版演示漫画：不连接私密 API，但完整保留输入、改写、检查和保存流程。";
+      heroLead.textContent = isAi ? "这张漫画由 Vercel 后端代理请求生图模型生成，网页再叠加可读中文台词。" : "这是一份本地兜底漫画：接口不可用时，仍然保留输入、改写、检查和保存流程。";
       tagRow.innerHTML = `
         <span class="tag">${result.tone}</span>
         <span class="tag">${result.desc}</span>
@@ -1532,7 +1547,7 @@
     }
 
     function friendlyError(message) {
-      if (message.includes("API")) return "公开版不会连接私密 API。";
+      if (message.includes("API")) return "后端代理暂时不可用。";
       if (message.includes("Failed to fetch")) return "浏览器网络请求被拦截。";
       if (message.includes("超过")) return message;
       if (message.includes("HTTP 524")) return "网关超时，生图模型可能正在排队。";
@@ -1553,7 +1568,7 @@
       }
 
       errorMsg.textContent = "";
-      topStatus.textContent = "公开版演示漫画生成中";
+      topStatus.textContent = "AI 漫画生成中";
       loadingShade.classList.remove("active");
       showScreen(loadingScreen);
       generateBtn.disabled = true;
@@ -1561,7 +1576,7 @@
         const result = await requestAiComic(text);
         refreshResult(result);
         showScreen(resultScreen);
-        showToast("演示漫画已生成，可以保存或复制");
+        showToast("漫画已生成，可以保存或复制");
       } catch (error) {
         const fallback = createResult(text);
         refreshResult(fallback);
